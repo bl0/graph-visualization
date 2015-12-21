@@ -1,0 +1,30 @@
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+.form{
+  width: 290px;
+  height: 60px ;
+  border:10px;
+}
+
+.source, .target, .weight{
+  width:50px;
+}
+
+.button{
+  text-align: right;
+}
+
+.svg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}

@@ -1,0 +1,2 @@
+point_count edge_count
+18 34
