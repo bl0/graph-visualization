@@ -6,6 +6,7 @@
 .link {
   stroke: #999;
   stroke-opacity: .6;
+  z-index: -2;
 }
 
 .form{

@@ -12,18 +12,22 @@ function checkField(id)
   if(id == 0)
   {
     path.style.display = "block";
+    path_display();
   }
   else if(id == 1)
   {
     mst.style.display = "block";
+    mst_display();
   }
   else if(id == 2)
   {
     centrality.style.display = "block";
+    betweenness_centrality_display();
   }
   else if(id == 3)
   {
     connected_component.style.display = "block";
+    connected_component_display();
   }
   else
   {
@@ -53,5 +57,10 @@ function closeness_centrality_display()
 
 function connected_component_display()
 {
-    alert("connected_component_display");
+  for (var i = nodes.length - 1; i >= 0; i--)   {
+    if(nodes[i].id == 10)
+      nodes[i].style.fill = "red";
+    else
+      nodes[i].style.fill = "black";
+  };
 }

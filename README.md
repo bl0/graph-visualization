@@ -1,1 +1,0 @@
-# graph-term-project

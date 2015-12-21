@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="bookmark" href="/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <script type="text/javascript" src="js/functions.js"></script>
 <script src="d3/d3.v3.min.js"></script>
@@ -61,6 +63,9 @@ var svg = d3.select(".svg").append("svg")
 var graph;
 var link;
 var node;
+var nodes;
+var links;
+
 d3.json("data/graph.json", function(error, graph) {
   if (error) throw error;
 
@@ -69,24 +74,26 @@ d3.json("data/graph.json", function(error, graph) {
       .links(graph.links)
       .start();
 
+  var n = graph.nodes.length;
   link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", 1)
-      .style("stroke", function(d, i){
-        if(i == 0) return "00f";
-        else return "ddd";
-
-      });
+      //为了方便查询，此处将边的id设为source.index*n+target.index。其中n为节点的size，此处为50
+      .attr("id", function(d){return d.source.index*n+d.target.index})
+      .style("stroke-width", 1);
 
   node = svg.selectAll(".node")
       .data(graph.nodes)
     .enter().append("circle")
       .attr("class", "node")
+      //将点的id设置为点的index。
+      .attr("id", function(d){return d.index})
       .attr("r", 5)
       .style("fill", "#0000ff")
       .call(force.drag);
+  nodes = node[0];
+  links = link[0];
 
   node.append("title")
       .text(function(d) { return d.name; });
