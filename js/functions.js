@@ -35,32 +35,55 @@ function checkField(id)
   }
 }  
 
+function node_init()
+{
+  node.style("fill", "#0000ff")
+    .style("r", 5)
+    .style("stroke-width", 1.5);
+    
+}
+
+function link_init()
+{
+  link.style("stroke", "#999")
+    .style("stroke-opacity", 0.6)
+    .style("stroke-width", function(d){return Math.sqrt(d.weight)/2;});
+}
+
+function init()
+{
+  link_init();
+  node_init();
+}
+
 function path_display()
 {
-    alert("path_display");
+  init();
+  alert("path_display");
 }
 
 function mst_display()
 {
-    alert("mst_display");
+  init();
+  alert("mst_display");
 }
 
 function betweenness_centrality_display()
 {
-    alert("betweenness_centrality_display");
+  init();
+  alert("betweenness_centrality_display");
 }
 
 function closeness_centrality_display()
 {
-    alert("closeness_centrality_display");
+  init();
+  alert("closeness_centrality_display");
 }
 
 function connected_component_display()
 {
-  for (var i = nodes.length - 1; i >= 0; i--)   {
-    if(nodes[i].id == 10)
-      nodes[i].style.fill = "red";
-    else
-      nodes[i].style.fill = "black";
-  };
+  init();
+  link.style("stroke", "#000");
+  link.style("stroke-width", function(d){return 0;});
+  node.style("fill", "#F80808");
 }

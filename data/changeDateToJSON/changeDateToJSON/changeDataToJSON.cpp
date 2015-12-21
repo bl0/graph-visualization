@@ -72,12 +72,14 @@ int main()
 	{
 		fout_graph << "		{" << endl;
 		fout_graph << "			\"source\": " << source[i] << "," << endl;
-		fout_graph << "			\"target\": " << target[i] << "" << endl;
+		fout_graph << "			\"target\": " << target[i] << "," << endl;
+		fout_graph << "			\"weight\": " << weight[i] << ""  << endl;
 		fout_graph << "		}," << endl;
 	}
 	fout_graph << "		{" << endl;
 	fout_graph << "			\"source\": " << source.back() << "," << endl;
-	fout_graph << "			\"target\": " << target.back() << "" << endl;
+	fout_graph << "			\"target\": " << target.back() << "," << endl;
+	fout_graph << "			\"weight\": " << weight.back() << ""  << endl;
 	fout_graph << "		}" << endl;
 	fout_graph << "	 ]" << endl;
 	fout_graph << "}" << endl;

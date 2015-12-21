@@ -60,11 +60,8 @@ var svg = d3.select(".svg").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var graph;
 var link;
 var node;
-var nodes;
-var links;
 
 d3.json("data/graph.json", function(error, graph) {
   if (error) throw error;
@@ -80,8 +77,8 @@ d3.json("data/graph.json", function(error, graph) {
     .enter().append("line")
       .attr("class", "link")
       //为了方便查询，此处将边的id设为source.index*n+target.index。其中n为节点的size，此处为50
-      .attr("id", function(d){return d.source.index*n+d.target.index})
-      .style("stroke-width", 1);
+      .attr("id", function(d){return d.source.index*n+d.target.index});
+  link_init();
 
   node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -89,11 +86,7 @@ d3.json("data/graph.json", function(error, graph) {
       .attr("class", "node")
       //将点的id设置为点的index。
       .attr("id", function(d){return d.index})
-      .attr("r", 5)
-      .style("fill", "#0000ff")
       .call(force.drag);
-  nodes = node[0];
-  links = link[0];
 
   node.append("title")
       .text(function(d) { return d.name; });
