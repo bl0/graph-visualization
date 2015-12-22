@@ -16,7 +16,7 @@
   border:10px;
 }
 
-.source, .target, .weight{
+.source, .target, .weight .Threshold_input{
   width:50px;
 }
 
@@ -29,4 +29,8 @@
   top: 0;
   left: 0;
   z-index: -1;
+}
+
+.Threshold{
+
 }

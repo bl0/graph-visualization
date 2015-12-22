@@ -83,7 +83,19 @@ function closeness_centrality_display()
 function connected_component_display()
 {
   init();
-  link.style("stroke", "#000");
-  link.style("stroke-width", function(d){return 0;});
-  node.style("fill", "#F80808");
+  
+}
+
+function Threshold_changed()
+{
+  var Threshold = document.getElementById("Threshold").value;
+  var Threshold_output = document.getElementById("Threshold_input");
+  Threshold_output.value = Threshold; 
+}
+
+function Threshold_input_changed()
+{
+  var Threshold = document.getElementById("Threshold_input").value;
+  var Threshold_output = document.getElementById("Threshold");
+  Threshold_output.value = Threshold; 
 }

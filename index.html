@@ -20,13 +20,15 @@
   </form>
   <div class="form">
     <div id="path" style="style:block">
-      起点：<input type="text" class="source" value="0"/>
-      终点：<input type="text" class="target" value="99"/>
+    
+    
+      起点：<input type="number" class="source" value="0" min="0" max="49" />
+      终点：<input type="number" class="target" value="0" min="0" max="49" />
             <input type="button" value="确定" onclick="path_display()">
     </div>
 
     <div id="mst" style="display:none;">
-      根节点：<input type="text" class="source" value="0" onchange="mst_display()" />
+      根节点：<input type="number" class="root" value="0" min="0" max="49" onchange="mst_display()"/>
     </div>
 
     <div id="centrality" style="display:none;">
@@ -35,7 +37,8 @@
     </div>
 
     <div id="connected_component" style="display:none;">
-            <input type="text" class="weight" value = "1" onchange="connected_component_display()"/>
+           <input class="Threshold" id="Threshold" type="range" min="0" max="20" step="0.01" value="0" onchange="Threshold_changed()" />
+           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="20" step="1" value="0" onchange="Threshold_input_changed()" />
     </div>
   </div>
   <div class="svg"></div>
@@ -43,15 +46,15 @@
 
 <script>
 var width = 1366,
-    height = 768;
+    height = 600;
 
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
     .charge(-1200)
     .linkDistance(300)
-    .gravity(0.4)
-    .linkStrength(0.1)
+    .gravity(0.3)
+    .linkStrength(0.7)
     .size([width, height]);
 
 var svg = d3.select(".svg").append("svg")
@@ -76,7 +79,8 @@ d3.json("data/graph.json", function(error, graph) {
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      //为了方便查询，此处将边的id设为source.index*n+target.index。其中n为节点的size，此处为50
+      //为了方便查询，此处将边的id设为source.index*n+target.index。
+      //其中n为节点的size，此处为50
       .attr("id", function(d){return d.source.index*n+d.target.index});
   link_init();
 
