@@ -82,8 +82,14 @@ function closeness_centrality_display()
 
 function connected_component_display()
 {
-  init();
-  
+  var Threshold = document.getElementById("Threshold_input").value;
+  link.style("stroke-width", function(d){
+
+    if(parseFloat(Threshold) <= d.weight)
+      return Math.sqrt(d.weight)/2;
+    else 
+      return 0;
+  });
 }
 
 function Threshold_changed()
@@ -91,6 +97,7 @@ function Threshold_changed()
   var Threshold = document.getElementById("Threshold").value;
   var Threshold_output = document.getElementById("Threshold_input");
   Threshold_output.value = Threshold; 
+  connected_component_display();
 }
 
 function Threshold_input_changed()
@@ -98,4 +105,5 @@ function Threshold_input_changed()
   var Threshold = document.getElementById("Threshold_input").value;
   var Threshold_output = document.getElementById("Threshold");
   Threshold_output.value = Threshold; 
+  connected_component_display();
 }

@@ -37,8 +37,8 @@
     </div>
 
     <div id="connected_component" style="display:none;">
-           <input class="Threshold" id="Threshold" type="range" min="0" max="20" step="0.01" value="0" onchange="Threshold_changed()" />
-           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="20" step="1" value="0" onchange="Threshold_input_changed()" />
+           <input class="Threshold" id="Threshold" type="range" min="0" max="30" step="0.01" value="0" onchange="Threshold_changed()" />
+           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="30" step="1" value="0" onchange="Threshold_input_changed()" />
     </div>
   </div>
   <div class="svg"></div>
@@ -63,7 +63,11 @@ var svg = d3.select(".svg").append("svg")
     .attr("width", width)
     .attr("height", height);
 
+//link指向实际画出来的那些边
 var link;
+//edges是一个二维数组，储存领接矩阵
+var edges;
+//node指向实际上画出来的那些点
 var node;
 
 d3.json("data/graph.json", function(error, graph) {
@@ -74,6 +78,17 @@ d3.json("data/graph.json", function(error, graph) {
       .links(graph.links)
       .start();
 
+  edges = new Array(n);   //先声明一维
+  for(var k=0;k<n;k++)
+  { 
+    edges[k]=new Array(); 
+    for(var j=0;j<n;j++)
+    {
+      edges[k][j]=Number.POSITIVE_INFINITY;
+    }
+  }
+
+  //首先加入“边”
   var n = graph.nodes.length;
   link = svg.selectAll(".link")
       .data(graph.links)
@@ -81,9 +96,13 @@ d3.json("data/graph.json", function(error, graph) {
       .attr("class", "link")
       //为了方便查询，此处将边的id设为source.index*n+target.index。
       //其中n为节点的size，此处为50
-      .attr("id", function(d){return d.source.index*n+d.target.index});
+      .attr("id", function(d){
+        //edges[parseInt(d.source.index)][parseInt(d.target.index)] = parseInt(d.weight);
+        return d.source.index*n+d.target.index
+      });
   link_init();
 
+  //其次加入“点”
   node = svg.selectAll(".node")
       .data(graph.nodes)
     .enter().append("circle")
@@ -91,6 +110,9 @@ d3.json("data/graph.json", function(error, graph) {
       //将点的id设置为点的index。
       .attr("id", function(d){return d.index})
       .call(force.drag);
+
+  
+  
 
   node.append("title")
       .text(function(d) { return d.name; });
