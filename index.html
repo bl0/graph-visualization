@@ -67,6 +67,8 @@ var svg = d3.select(".svg").append("svg")
 var link;
 //edges是一个二维数组，储存领接矩阵
 var edges;
+var dists;
+var paths;
 //node指向实际上画出来的那些点
 var node;
 
@@ -78,18 +80,24 @@ d3.json("data/graph.json", function(error, graph) {
       .links(graph.links)
       .start();
 
-  edges = new Array(n);   //先声明一维
-  for(var k=0;k<n;k++)
-  { 
-    edges[k]=new Array(); 
-    for(var j=0;j<n;j++)
-    {
-      edges[k][j]=Number.POSITIVE_INFINITY;
-    }
-  }
 
   //首先加入“边”
   var n = graph.nodes.length;
+  edges = new Array(n);   //先声明一维
+  dists = new Array(n);
+  paths = new Array(n);
+  for(var k=0;k<n;k++)
+  { 
+    edges[k] = new Array(n); 
+    dists[k] = new Array(n);
+    paths[k] = new Array(n);
+    for(var j=0;j<n;j++)
+    {
+      edges[k][j]=Number.POSITIVE_INFINITY;
+      dists[k][j]=Number.POSITIVE_INFINITY;
+      paths[k][j]=Number.POSITIVE_INFINITY;
+    }
+  }
   link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("line")
@@ -97,10 +105,29 @@ d3.json("data/graph.json", function(error, graph) {
       //为了方便查询，此处将边的id设为source.index*n+target.index。
       //其中n为节点的size，此处为50
       .attr("id", function(d){
-        //edges[parseInt(d.source.index)][parseInt(d.target.index)] = parseInt(d.weight);
-        return d.source.index*n+d.target.index
+        edges[d.source.index][d.target.index] = d.weight;
+        dists[d.source.index][d.target.index] = d.weight;
+        return (d.source.index*n+d.target.index).toString()+"_link";
       });
   link_init();
+
+  //使用flolyd-warshall算法计算任意两点之间的最短距离和最短路径
+  for(var k = 0; k < n; k ++)
+  {
+    for(var i = 0; i < n; i ++)
+    {
+      for(var j = 0; j < n; j ++)
+      {
+        if(dists[i][k] != Number.POSITIVE_INFINITY 
+          && dists[k][j] != Number.POSITIVE_INFINITY 
+          && dists[i][k]+dists[k][j]<dists[i][j])
+        {
+          dists[i][j] = dists[i][k]+dists[k][j];
+          paths[i][j] = k;
+        }
+      }
+    }
+  }
 
   //其次加入“点”
   node = svg.selectAll(".node")
@@ -108,12 +135,13 @@ d3.json("data/graph.json", function(error, graph) {
     .enter().append("circle")
       .attr("class", "node")
       //将点的id设置为点的index。
-      .attr("id", function(d){return d.index})
+      .attr("id", function(d){return d.index.toString()+"_node";})
       .call(force.drag);
 
   
   
-
+  link.append("title")
+      .text(function(d) {return "source:" + d.source.index + "\ntarget:" + d.target.index + "\nweight:" + d.weight;});
   node.append("title")
       .text(function(d) { return d.name; });
 
