@@ -17,7 +17,7 @@
       <option value="中心度">中心度</option>
       <option value="联通分量">连通分量</option>
     </select>
-  </form>
+</form><br/>
   <div class="form">
     <div id="path" style="style:block">
     
@@ -30,6 +30,8 @@
 
     <div id="mst" style="display:none;">
       根节点：<input type="number" class="root" value="0" min="0" max="199" onchange="mst_display()"/><br/>
+      <input class="Threshold" id="Threshold_tree" type="range" min="0" max="35" step="0.01" value="0" onchange="Threshold_changed_tree()" />
+      <input class="Threshold_input" id="Threshold_input_tree" type="number" min="0" max="35" step="1" value="0" onchange="Threshold_input_changed_tree()" /><br/>
       权值：<output type="number" value="0" class="view_weight" id="view_tree_weight" >
     </div>
 
