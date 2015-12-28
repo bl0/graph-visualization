@@ -25,11 +25,12 @@
       起点：<input type="number" class="source" value="0" min="0" max="199" />
       终点：<input type="number" class="target" value="1" min="0" max="199" />
             <input type="button" value="确定" onclick="path_display()" autofocus="autofocus" /><br/>
-      权值：<input type="text" value="0" class="view_weight" id="view_weight">
+      权值：<output type="text" value="0" class="view_weight" id="view_weight">
     </div>
 
     <div id="mst" style="display:none;">
       根节点：<input type="number" class="root" value="0" min="0" max="199" onchange="mst_display()"/>
+      权值：<output type="text" value="0" class="view_weight" id="view_tree_weight">
     </div>
 
     <div id="centrality" style="display:none;">
@@ -54,7 +55,7 @@ var color = d3.scale.category20();
 var force = d3.layout.force()
     .charge(-100)
     .linkDistance(100)
-    .gravity(0.1)
+    .gravity(0.2)
     .linkStrength(0.3)
     .size([width, height]);
 
