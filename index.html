@@ -23,8 +23,8 @@
     
     
       起点：<input type="number" class="source" value="0" min="0" max="49" />
-      终点：<input type="number" class="target" value="0" min="0" max="49" />
-            <input type="button" value="确定" onclick="path_display()">
+      终点：<input type="number" class="target" value="1" min="0" max="49" />
+            <input type="button" value="确定" onclick="path_display()" id="m_button" autofocus="autofocus" onkeydown="if(event.keyCode==13){path_display()}"/>
     </div>
 
     <div id="mst" style="display:none;">
@@ -32,7 +32,7 @@
     </div>
 
     <div id="centrality" style="display:none;">
-      <input type="button" value="介数中心度" onclick="closeness_centrality_display()" />
+      <input type="button" value="介数中心度" onclick="closeness_centrality_display()" autofocus="autofocus"/>
       <input type="button" value="紧密中心度" onclick="closeness_centrality_display()" />
     </div>
 
