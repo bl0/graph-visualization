@@ -171,6 +171,7 @@ function mst_display()
   //   };
   //   return 0.4;
   // });
+
   link.style("stroke", function(d){
     for(var i = 0; i < n; i ++)
     {
