@@ -320,24 +320,67 @@ function betweenness_centrality_display()
       path[0] = i;
       index = 1;
       index = get_path(i, j, path, index);
+      total ++;
       for(var k = 0; k < index; k ++)
       {
         BC[path[k]] ++;
-        total ++;
       }
     }
   }
+
   for(var i = 0; i < n; i ++)
   {
     BC[i] = BC[i] / total;
   }
-
-  alert(BC[0]);
+  node.style("fill", function(d, i){
+      var r = 5110*BC[i];
+      var g = 0;
+      var b = 255 - r;
+      return d3.rgb(r, g, b);
+    });
 }
 
 function closeness_centrality_display()
 {
-  alert("closeness_centrality_display");
+  var CC = new Array(n);
+  var total = 0;
+   for(var i = 0; i < n; i ++)
+  {
+    CC[i] = 0;
+  }
+  for(var i = 0; i < n; i ++)
+  {
+    for(var j = 0; j < n; j ++)
+    {
+      if(i == j) continue;
+      path = new Array(n);
+      path[0] = i;
+      index = 1;
+      index = get_path(i, j, path, index);
+      total ++;
+      if(paths[i][j] == -1)
+      {
+        CC[i] += 1000;
+      }
+      else
+      {
+        var total_weight = 0;
+        for (var k = 0; k < index-1; k++) 
+        {
+          total_weight += edges[path[k]][path[k+1]];
+        }  
+        CC[i] += total_weight;   
+      }
+    }
+  }
+  node.style("fill", function(d, i){
+      if(CC[i] > 1000*n*0.9)
+        return "black";
+      var r = 255 - (CC[i] - 12000)*0.9;
+      var g = 0;
+      var b = 255 - r;
+      return d3.rgb(r, g, b);
+    });
 }
 
 function connected_component_display()
