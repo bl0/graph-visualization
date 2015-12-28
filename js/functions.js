@@ -90,25 +90,45 @@ function path_display()
   var path = new Array(50);
   var index = 0;
   index = get_path(sourceIndex, targetIndex, path, 0);
-  node.style("r", function(d){
+  node.style("fill", function(d){
     for(var i = 0; i < index; i ++)
     {
       if(path[i] == d.index)
       {
-        return 5;
+        return "#FA0404";
       }
     }
-    return 0;
+    return "#0000ff";
   });
-  link.style("stroke-width", function(d){
+  link.style("stroke", function(d){
     for(var i = 0; i < index-1; i ++)
     {
       if(path[i] == d.source.index && path[i+1] == d.target.index)
       {
-        return link_width(d.weight);
+        return "#0A0A0A";
       }
     }
-    return 0;
+    return "#999";
+  });
+    link.style("stroke-opacity", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if(path[i] == d.source.index && path[i+1] == d.target.index)
+      {
+        return 1;
+      }
+    }
+    return 0.1;
+  });
+      link.style("stroke", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if(path[i] == d.source.index && path[i+1] == d.target.index)
+      {
+        return "#0A0A0A";
+      }
+    }
+    return "#999";
   });
 }
 
@@ -156,4 +176,4 @@ function Threshold_input_changed()
   var Threshold_output = document.getElementById("Threshold");
   Threshold_output.value = Threshold; 
   connected_component_display();
-}
+} 
