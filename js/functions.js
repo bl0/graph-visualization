@@ -151,7 +151,7 @@ function mst_display()
 {
   var path = new Array(n);
   var total_weight = 0;
-  var root = parseInt(document.getElementsByClassName("root")[0].value);
+  var root = parseInt(document.getElementById("root").value);
   var path_length = document.getElementById("view_tree_weight");
   var Threshold = document.getElementById("Threshold_input_tree").value;
   if (root >= n || root < 0) 
