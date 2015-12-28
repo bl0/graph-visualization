@@ -17,7 +17,8 @@
 #include <string>
 #include <cstring>
 using namespace std;
-int maxn = 50;
+int maxn = 200;
+int edge_sample_dist = 10;
 std::vector<int> source;
 std::vector<int> target;
 std::vector<double> weight;
@@ -69,6 +70,7 @@ int main()
 	fout_graph << "	\"links\":" << endl;
 	fout_graph << "	[" << endl;
 	for(int i = 0; i < source.size()-1; i ++)
+	if(i % edge_sample_dist == 0)
 	{
 		fout_graph << "		{" << endl;
 		fout_graph << "			\"source\": " << source[i] << "," << endl;

@@ -51,10 +51,10 @@ var width = 1366,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-1200)
-    .linkDistance(300)
+    .charge(-100)
+    .linkDistance(100)
     .gravity(0.3)
-    .linkStrength(0.7)
+    .linkStrength(0.3)
     .size([width, height]);
 
 var svg = d3.select(".svg").append("svg")
@@ -86,16 +86,16 @@ d3.json("data/graph.json", function(error, graph) {
   edges = new Array(n);   //先声明一维
   dists = new Array(n);
   paths = new Array(n);
-  for(var k=0;k<n;k++)
+  for(var k = 0; k < n; k ++)
   { 
     edges[k] = new Array(n); 
     dists[k] = new Array(n);
     paths[k] = new Array(n);
     for(var j=0;j<n;j++)
     {
-      edges[k][j]=Number.POSITIVE_INFINITY;
-      dists[k][j]=Number.POSITIVE_INFINITY;
-      paths[k][j]=Number.POSITIVE_INFINITY;
+      edges[k][j] = Number.POSITIVE_INFINITY;
+      dists[k][j] = Number.POSITIVE_INFINITY;
+      paths[k][j] = Number.POSITIVE_INFINITY;
     }
   }
   link = svg.selectAll(".link")
