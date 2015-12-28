@@ -43,7 +43,7 @@ function node_init()
 {
   node.style("fill", "#0000ff")
     .style("r", 5)
-    // .style("stroke_opacity",1)
+    .style("stroke_opacity",1)
     .style("stroke-width", 1.5);
     
 }
@@ -68,11 +68,9 @@ function init()
 
 function get_path(i, j, path, index)
 {
-  if(paths[i][j] == -1)
-    return index;
   if(i == j)
    ;
-  else if(paths[i][j] == j) 
+  else if(paths[i][j] == Number.POSITIVE_INFINITY) 
   {
     var targetNode  = document.getElementById(j.toString()+"_node");
     path[index++] = parseInt(targetNode.id);
@@ -89,14 +87,14 @@ function path_display()
 {
   var sourceIndex = parseInt(document.getElementsByClassName("source")[0].value);
   var targetIndex = parseInt(document.getElementsByClassName("target")[0].value);
-  if (sourceIndex >= n) 
+  if (sourceIndex >= n || sourceIndex < 0) 
   {
-    alert("起点超过阈值" + (n-1).toString() + "!");
+    alert("请输入0~" + (n-1).toString() + "的数字");
     return;
   };
   if (targetIndex >= n) 
   {
-    alert("终点超过阈值" + (n-1).toString() + "!");
+    alert("请输入0~" + (n-1).toString() + "的数字");
     return;
   };
   var sourceNode  = document.getElementById(sourceIndex.toString()+"_node");
@@ -104,65 +102,46 @@ function path_display()
   var path_length = document.getElementById("view_weight");
   var path = new Array(n);
   var index = 1;
+  var total_weight = 0;
   path[0] = sourceIndex;
   index = get_path(sourceIndex, targetIndex, path, index);
-  if(paths[sourceIndex][targetIndex] == -1)
+  for (var i = 0; i < index-1; i++) 
   {
-    path_length.value = "POSITIVE_INFINITY";
-    alert("起点与终点不连通");
+    total_weight += edges[path[i]][path[i+1]];
   }
-  else
-  {
-    var total_weight = 0;
-    for (var i = 0; i < index-1; i++) 
+  path_length.value = total_weight.toPrecision(6);
+  node.style("fill", function(d){
+    for(var i = 0; i < index; i ++)
     {
-      total_weight += edges[path[i]][path[i+1]];
-    }  
-    path_length.value = total_weight;
-    node.style("fill", function(d){
-      for(var i = 0; i < index; i ++)
+      if(path[i] == d.index)
       {
-        if(path[i] == d.index)
-        {
-          return "#FA0404";
-        }
+        return "#FA0404";
       }
-      return "#0000ff";
-    });
-    link.style("stroke", function(d){
-      for(var i = 0; i < index-1; i ++)
+    }
+    return "#0000ff";
+  });
+  link.style("stroke", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
       {
-        if((path[i] == d.source.index && path[i+1] == d.target.index)
-          || (path[i+1] == d.source.index && path[i] == d.target.index))
-        {
-          return "#0A0A0A";
-        }
+        return "#0A0A0A";
       }
-      return "#999";
-    });
-      link.style("stroke-opacity", function(d){
-      for(var i = 0; i < index-1; i ++)
+    }
+    return "#999";
+  });
+  link.style("stroke-opacity", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
       {
-        if((path[i] == d.source.index && path[i+1] == d.target.index)
-          || (path[i+1] == d.source.index && path[i] == d.target.index))
-        {
-          return 1;
-        }
+        return 1;
       }
-      return 0.1;
-    });
-        link.style("stroke", function(d){
-      for(var i = 0; i < index-1; i ++)
-      {
-        if((path[i] == d.source.index && path[i+1] == d.target.index)
-          || (path[i+1] == d.source.index && path[i] == d.target.index))
-        {
-          return "#0A0A0A";
-        }
-      }
-      return "#999";
-    });
-  }
+    }
+    return 0.1;
+  });
 }
 
 function mst_display()
@@ -171,8 +150,13 @@ function mst_display()
   var total_weight = 0;
   var root = parseInt(document.getElementsByClassName("root")[0].value);
   var path_length = document.getElementById("view_tree_weight");
+  if (root >= n || root < 0) 
+  {
+    alert("请输入0~" + (n-1).toString() + "的数字");
+    return;
+  };
   total_weight = spanning_tree(root,path);
-  path_length.value = total_weight;
+  path_length.value = total_weight.toPrecision(6);
   node.style("fill", function(d){
     if (path[d.index].prev == -2) 
     {
@@ -185,14 +169,13 @@ function mst_display()
     return "#0000ff";
   });
 
-  // node.style("stroke_opacity", function(d){
-  //   if(path[d.index].prev != -1)
-  //   {
-  //     return 1;
-  //   };
-  //   return 0.4;
-  // });
-
+  node.style("stroke_opacity", function(d){
+    if(path[d.index].prev != -1)
+    {
+      return 1;
+    };
+    return 0.4;
+  });
   link.style("stroke", function(d){
     for(var i = 0; i < n; i ++)
     {
@@ -305,34 +288,7 @@ function spanning_tree(root,searchnode)
 
 function betweenness_centrality_display()
 {
-  var BC = new Array(n);
-  var total = 0;
-  for(var i = 0; i < n; i ++)
-  {
-    BC[i] = 0;
-  }
-  for(var i = 0; i < n; i ++)
-  {
-    for(var j = 0; j < n; j ++)
-    {
-      if(i == j) continue;
-      path = new Array(n);
-      path[0] = i;
-      index = 1;
-      index = get_path(i, j, path, index);
-      for(var k = 0; k < index; k ++)
-      {
-        BC[path[k]] ++;
-        total ++;
-      }
-    }
-  }
-  for(var i = 0; i < n; i ++)
-  {
-    BC[i] = BC[i] / total;
-  }
-
-  alert(BC[0]);
+  alert("betweenness_centrality_display");
 }
 
 function closeness_centrality_display()
@@ -343,7 +299,18 @@ function closeness_centrality_display()
 function connected_component_display()
 {
   var Threshold = document.getElementById("Threshold_input").value;
-  link.style("stroke-width", function(d){return d.weight > Threshold ? link_width(d.weight) : 0; });
+  link.remove();
+  link = svg.selectAll(".link")
+      .data(graph_global.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .attr("id", function(d){
+        return (d.source.index*n+d.target.index).toString()+"_link";
+      });
+
+  link_init();
+  var odds = link.filter(function(d, i) { return d.weight <= Threshold; });
+  odds.remove();
 }
 
 function Threshold_changed()
