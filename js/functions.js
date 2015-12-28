@@ -153,12 +153,13 @@ function mst_display()
   var total_weight = 0;
   var root = parseInt(document.getElementsByClassName("root")[0].value);
   var path_length = document.getElementById("view_tree_weight");
+  var Threshold = document.getElementById("Threshold_input_tree").value;
   if (root >= n || root < 0) 
   {
     alert("请输入0~" + (n-1).toString() + "的数字");
     return;
   };
-  total_weight = spanning_tree(root,path);
+  total_weight = spanning_tree(root,path,Threshold);
   path_length.value = total_weight.toPrecision(6);
   node.style("fill", function(d){
     if (path[d.index].prev == -2) 
@@ -216,6 +217,22 @@ function mst_display()
   });
 }
 
+function Threshold_changed_tree()
+{
+  var Threshold = document.getElementById("Threshold_tree").value;
+  var Threshold_output = document.getElementById("Threshold_input_tree");
+  Threshold_output.value = Threshold; 
+  mst_display();
+}
+
+function Threshold_input_changed_tree()
+{
+  var Threshold = document.getElementById("Threshold_input_tree").value;
+  var Threshold_output = document.getElementById("Threshold_tree");
+  Threshold_output.value = Threshold; 
+  mst_display();
+} 
+
 function SearchNode()
 {
 　this.dist = 0;
@@ -225,7 +242,7 @@ function SearchNode()
   this.prev = -1;
 }
 
-function spanning_tree(root,searchnode)
+function spanning_tree(root,searchnode,limit_length)
 {
   var search_num;
   var visited_node = new Array(n);
@@ -233,7 +250,12 @@ function spanning_tree(root,searchnode)
   for (var i = 0; i < n; ++i)
   {
     searchnode[i] = new SearchNode();
-    searchnode[i].dist = edges[root][i];
+    if (edges[root][i] <= limit_length) 
+      {
+        searchnode[i].dist = Number.POSITIVE_INFINITY;
+      }
+    else 
+      searchnode[i].dist = edges[root][i];
     if (searchnode[i].dist != Number.POSITIVE_INFINITY) {searchnode[i].prev = root};
     searchnode[i].flag = false;                                // 初始都未用过该点
   }
