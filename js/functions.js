@@ -11,21 +11,25 @@ function checkField(id)
 
   if(id == 0)
   {
+    init();
     path.style.display = "block";
     path_display();
   }
   else if(id == 1)
   {
+    init();
     mst.style.display = "block";
     mst_display();
   }
   else if(id == 2)
   {
+    init();
     centrality.style.display = "block";
     betweenness_centrality_display();
   }
   else if(id == 3)
   {
+    init();
     connected_component.style.display = "block";
     connected_component_display();
   }
@@ -63,8 +67,6 @@ function init()
 
 function get_path(i, j, path, index)
 {
-  var targetNode  = document.getElementById(i.toString()+"_node");
-  path[index++] = parseInt(targetNode.id);
   if(i == j)
    ;
   else if(paths[i][j] == Number.POSITIVE_INFINITY) 
@@ -82,14 +84,31 @@ function get_path(i, j, path, index)
 
 function path_display()
 {
-  init();
   var sourceIndex = parseInt(document.getElementsByClassName("source")[0].value);
   var targetIndex = parseInt(document.getElementsByClassName("target")[0].value);
+  if (sourceIndex >= n) 
+  {
+    alert("起点超过阈值" + (n-1).toString() + "!");
+    return;
+  };
+  if (targetIndex >= n) 
+  {
+    alert("终点超过阈值" + (n-1).toString() + "!");
+    return;
+  };
   var sourceNode  = document.getElementById(sourceIndex.toString()+"_node");
   var targetNode  = document.getElementById(targetIndex.toString()+"_node");
-  var path = new Array(50);
-  var index = 0;
-  index = get_path(sourceIndex, targetIndex, path, 0);
+  var path_length = document.getElementById("view_weight");
+  var path = new Array(n);
+  var index = 1;
+  var total_weight = 0;
+  path[0] = sourceIndex;
+  index = get_path(sourceIndex, targetIndex, path, index);
+  for (var i = 0; i < index-1; i++) 
+  {
+    total_weight += edges[path[i]][path[i+1]];
+  }
+  path_length.value = total_weight;
   node.style("fill", function(d){
     for(var i = 0; i < index; i ++)
     {
@@ -103,7 +122,8 @@ function path_display()
   link.style("stroke", function(d){
     for(var i = 0; i < index-1; i ++)
     {
-      if(path[i] == d.source.index && path[i+1] == d.target.index)
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
       {
         return "#0A0A0A";
       }
@@ -113,7 +133,8 @@ function path_display()
     link.style("stroke-opacity", function(d){
     for(var i = 0; i < index-1; i ++)
     {
-      if(path[i] == d.source.index && path[i+1] == d.target.index)
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
       {
         return 1;
       }
@@ -123,7 +144,8 @@ function path_display()
       link.style("stroke", function(d){
     for(var i = 0; i < index-1; i ++)
     {
-      if(path[i] == d.source.index && path[i+1] == d.target.index)
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
       {
         return "#0A0A0A";
       }
@@ -134,19 +156,123 @@ function path_display()
 
 function mst_display()
 {
-  init();
-  alert("mst_display");
+  var path = new Array(n);
+  var index = 1;
+  var total_weight = 0;
+  path[0] = sourceIndex;
+  index = get_path(sourceIndex, targetIndex, path, index);
+  for (var i = 0; i < index-1; i++) 
+  {
+    total_weight += edges[path[i]][path[i+1]];
+  }
+  path_length.value = total_weight;
+  node.style("fill", function(d){
+    for(var i = 0; i < index; i ++)
+    {
+      if(path[i] == d.index)
+      {
+        return "#FA0404";
+      }
+    }
+    return "#0000ff";
+  });
+  link.style("stroke", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      {
+        return "#0A0A0A";
+      }
+    }
+    return "#999";
+  });
+    link.style("stroke-opacity", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      {
+        return 1;
+      }
+    }
+    return 0.1;
+  });
+      link.style("stroke", function(d){
+    for(var i = 0; i < index-1; i ++)
+    {
+      if((path[i] == d.source.index && path[i+1] == d.target.index)
+        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      {
+        return "#0A0A0A";
+      }
+    }
+    return "#999";
+  });
 }
+}
+
+// function spanning_tree()
+// {
+//   int search_num, path_length;
+//   var *visited_node = new Array[200];
+//   SearchNode *searchnode = new SearchNode[vertex_num];
+//   for (int i = 0; i < vertex_num; ++i)
+//   {
+//     searchnode[i].dist = p[0][i].length;
+//     searchnode[i].flag = false;                                // 初始都未用过该点
+//   }
+//   search_num = 0;
+//   path_length = 0;                                // 选取0为初始点
+//   visited_node[0] = 0;
+//   searchnode[0].dist = 0;
+//   searchnode[0].flag = true;
+//   search_num++;
+//   for (int i = 0; i < vertex_num; i++)
+//   {
+//     if (search_num == vertex_num)
+//     {
+//       break;
+//     }
+//     int mindist = 999999;
+//     int u = 0;                      // 找出当前未使用的点j的dist[j]最小值
+//     for (int j = 0; j < vertex_num; ++j)
+//       if ((!searchnode[j].flag) && searchnode[j].dist < mindist)
+//       {
+//         u = j;                             // u保存当前邻接点中距离最小的点的号码 
+//         mindist = searchnode[j].dist;           
+//       }
+//     searchnode[u].flag = true;
+//     searchnode[searchnode[u].prev].next[searchnode[searchnode[u].prev].next_num] = u;
+//     searchnode[searchnode[u].prev].next_num++;
+//     path_length += searchnode[u].dist;
+//     visited_node[search_num] = u;
+//     search_num++; 
+//     for (int j = 0; j < vertex_num; j++)
+//     {
+//       if (!searchnode[j].flag)
+//       {
+//         int prev = 0;
+//         for (int i = 0; i < search_num; ++i)
+//         {
+//           if (p[visited_node[i]][j].length < searchnode[j].dist)
+//           {
+//             searchnode[j].dist = p[visited_node[i]][j].length;
+//             searchnode[j].prev = visited_node[i];
+//           }   
+//         }
+//       }
+//     }
+//   }
+// }
 
 function betweenness_centrality_display()
 {
-  init();
   alert("betweenness_centrality_display");
 }
 
 function closeness_centrality_display()
 {
-  init();
   alert("closeness_centrality_display");
 }
 

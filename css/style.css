@@ -16,7 +16,7 @@
   border:10px;
 }
 
-.source, .target, .weight .Threshold_input{
+.source, .target, .weight, .Threshold_input, .view_weight{
   width:50px;
 }
 
