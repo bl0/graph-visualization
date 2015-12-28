@@ -107,6 +107,8 @@ d3.json("data/graph.json", function(error, graph) {
       .attr("id", function(d){
         edges[d.source.index][d.target.index] = d.weight;
         dists[d.source.index][d.target.index] = d.weight;
+        edges[d.target.index][d.source.index] = d.weight;
+        dists[d.target.index][d.source.index] = d.weight;
         return (d.source.index*n+d.target.index).toString()+"_link";
       });
   link_init();
