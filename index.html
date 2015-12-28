@@ -86,16 +86,16 @@ d3.json("data/graph.json", function(error, graph) {
   edges = new Array(n);   //先声明一维
   dists = new Array(n);
   paths = new Array(n);
-  for(var k=0;k<n;k++)
+  for(var k = 0; k < n; k ++)
   { 
     edges[k] = new Array(n); 
     dists[k] = new Array(n);
     paths[k] = new Array(n);
     for(var j=0;j<n;j++)
     {
-      edges[k][j]=Number.POSITIVE_INFINITY;
-      dists[k][j]=Number.POSITIVE_INFINITY;
-      paths[k][j]=Number.POSITIVE_INFINITY;
+      edges[k][j] = Number.POSITIVE_INFINITY;
+      dists[k][j] = Number.POSITIVE_INFINITY;
+      paths[k][j] = Number.POSITIVE_INFINITY;
     }
   }
   link = svg.selectAll(".link")
