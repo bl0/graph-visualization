@@ -43,6 +43,7 @@ function node_init()
 {
   node.style("fill", "#0000ff")
     .style("r", 5)
+    // .style("stroke_opacity",1)
     .style("stroke-width", 1.5);
     
 }
@@ -167,114 +168,140 @@ function path_display()
 function mst_display()
 {
   var path = new Array(n);
-  var index = 1;
   var total_weight = 0;
-  path[0] = sourceIndex;
-  index = get_path(sourceIndex, targetIndex, path, index);
-  for (var i = 0; i < index-1; i++) 
-  {
-    total_weight += edges[path[i]][path[i+1]];
-  }
+  var root = parseInt(document.getElementsByClassName("root")[0].value);
+  var path_length = document.getElementById("view_tree_weight");
+  total_weight = spanning_tree(root,path);
   path_length.value = total_weight;
   node.style("fill", function(d){
-    for(var i = 0; i < index; i ++)
+    if (path[d.index].prev == -2) 
     {
-      if(path[i] == d.index)
-      {
-        return "#FA0404";
-      }
-    }
+      return "#FFFF00";
+    };
+    if(path[d.index].prev != -1)
+    {
+      return "#FA0404";
+    };
     return "#0000ff";
   });
+
+  // node.style("stroke_opacity", function(d){
+  //   if(path[d.index].prev != -1)
+  //   {
+  //     return 1;
+  //   };
+  //   return 0.4;
+  // });
+
   link.style("stroke", function(d){
-    for(var i = 0; i < index-1; i ++)
+    for(var i = 0; i < n; i ++)
     {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      if(path[i].next_num)
       {
-        return "#0A0A0A";
+        for (var j = 0; j < path[i].next_num; j++) 
+        {
+          if ((i == d.source.index && path[i].next[j] == d.target.index)
+            || (path[i].next[j] == d.source.index && i == d.target.index)) 
+          {
+            return "#0A0A0A";
+          }
+        }
       }
     }
     return "#999";
   });
-    link.style("stroke-opacity", function(d){
-    for(var i = 0; i < index-1; i ++)
+
+  link.style("stroke-opacity", function(d){
+    for(var i = 0; i < n; i ++)
     {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      if(path[i].next_num)
       {
-        return 1;
+        for (var j = 0; j < path[i].next_num; j++) 
+        {
+          if ((i == d.source.index && path[i].next[j] == d.target.index)
+            || (path[i].next[j] == d.source.index && i == d.target.index)) 
+          {
+            return 1;
+          }
+        }
       }
     }
     return 0.1;
   });
-      link.style("stroke", function(d){
-    for(var i = 0; i < index-1; i ++)
-    {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
-      {
-        return "#0A0A0A";
-      }
-    }
-    return "#999";
-  });
 }
 
+function SearchNode()
+{
+　this.dist = 0;
+　this.flag = false;
+  this.next = new Array(n);
+  this.next_num = 0;
+  this.prev = -1;
+}
 
-// function spanning_tree()
-// {
-//   int search_num, path_length;
-//   var *visited_node = new Array[200];
-//   SearchNode *searchnode = new SearchNode[vertex_num];
-//   for (int i = 0; i < vertex_num; ++i)
-//   {
-//     searchnode[i].dist = p[0][i].length;
-//     searchnode[i].flag = false;                                // 初始都未用过该点
-//   }
-//   search_num = 0;
-//   path_length = 0;                                // 选取0为初始点
-//   visited_node[0] = 0;
-//   searchnode[0].dist = 0;
-//   searchnode[0].flag = true;
-//   search_num++;
-//   for (int i = 0; i < vertex_num; i++)
-//   {
-//     if (search_num == vertex_num)
-//     {
-//       break;
-//     }
-//     int mindist = 999999;
-//     int u = 0;                      // 找出当前未使用的点j的dist[j]最小值
-//     for (int j = 0; j < vertex_num; ++j)
-//       if ((!searchnode[j].flag) && searchnode[j].dist < mindist)
-//       {
-//         u = j;                             // u保存当前邻接点中距离最小的点的号码 
-//         mindist = searchnode[j].dist;           
-//       }
-//     searchnode[u].flag = true;
-//     searchnode[searchnode[u].prev].next[searchnode[searchnode[u].prev].next_num] = u;
-//     searchnode[searchnode[u].prev].next_num++;
-//     path_length += searchnode[u].dist;
-//     visited_node[search_num] = u;
-//     search_num++; 
-//     for (int j = 0; j < vertex_num; j++)
-//     {
-//       if (!searchnode[j].flag)
-//       {
-//         int prev = 0;
-//         for (int i = 0; i < search_num; ++i)
-//         {
-//           if (p[visited_node[i]][j].length < searchnode[j].dist)
-//           {
-//             searchnode[j].dist = p[visited_node[i]][j].length;
-//             searchnode[j].prev = visited_node[i];
-//           }   
-//         }
-//       }
-//     }
-//   }
-// }
+function spanning_tree(root,searchnode)
+{
+  var search_num;
+  var visited_node = new Array(n);
+  var path_length;
+  for (var i = 0; i < n; ++i)
+  {
+    searchnode[i] = new SearchNode();
+    searchnode[i].dist = edges[root][i];
+    if (searchnode[i].dist != Number.POSITIVE_INFINITY) {searchnode[i].prev = root};
+    searchnode[i].flag = false;                                // 初始都未用过该点
+  }
+  path_length = 0;
+  search_num = 0;                                              // 选取0为初始点
+  visited_node[0] = root;
+  searchnode[root].dist = 0;
+  searchnode[root].flag = true;
+  searchnode[root].prev = -2;
+  search_num++;
+  for (var i = 0; i < n; i++)
+  {
+    if (search_num == n)
+    {
+      break;
+    }
+    var nodeFlag = false;
+    var mindist = 999999;
+    var u = 0;
+    var j;                      // 找出当前未使用的点j的dist[j]最小值
+    for (j = 0; j < n; ++j)
+      if ((!searchnode[j].flag) && searchnode[j].dist < mindist)
+      {
+        u = j;                             // u保存当前邻接点中距离最小的点的号码 
+        mindist = searchnode[j].dist;     
+        nodeFlag = true;      
+      }
+    if (nodeFlag == false) 
+    {
+      break; 
+    };
+    searchnode[u].flag = true;
+    searchnode[searchnode[u].prev].next[searchnode[searchnode[u].prev].next_num] = u;
+    searchnode[searchnode[u].prev].next_num++;
+    path_length += searchnode[u].dist;
+    visited_node[search_num] = u;
+    search_num++; 
+    for (j = 0; j < n; j++)
+    {
+      if (!searchnode[j].flag)
+      {
+        for (var i = 0; i < search_num; ++i)
+        {
+          if (edges[visited_node[i]][j] < searchnode[j].dist)
+          {
+            searchnode[j].dist = edges[visited_node[i]][j];
+            searchnode[j].prev = visited_node[i];
+          }   
+        }
+      }
+    }
+  }
+  return path_length;
+}
 
 function betweenness_centrality_display()
 {
