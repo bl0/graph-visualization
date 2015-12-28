@@ -39,8 +39,8 @@
     </div>
 
     <div id="connected_component" style="display:none;">
-           <input class="Threshold" id="Threshold" type="range" min="0" max="30" step="0.01" value="0" onchange="Threshold_changed()" />
-           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="30" step="1" value="0" onchange="Threshold_input_changed()" />
+           <input class="Threshold" id="Threshold" type="range" min="0" max="35" step="0.01" value="0" onchange="Threshold_changed()" />
+           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="35" step="1" value="0" onchange="Threshold_input_changed()" />
     </div>
   </div>
   <div class="svg"></div>           
@@ -49,22 +49,18 @@
 <script>
 var width = 1366,
     height = 600;
-
 var color = d3.scale.category20();
-
 var force = d3.layout.force()
     .charge(-100)
     .linkDistance(100)
     .gravity(0.1)
-    .linkStrength(0.3)
+    .linkStrength(1)
     .size([width, height]);
-
 var svg = d3.select(".svg").append("svg")
     .attr("x", 0)
     .attr("y", -60)
     .attr("width", width)
     .attr("height", height);
-
 //link指向实际画出来的那些边
 var link;
 //edges是一个二维数组，储存领接矩阵
@@ -75,17 +71,13 @@ var paths;
 var node;
 var n;
 var graph_global;
-
 d3.json("data/graph.json", function(error, graph) {
   if (error) throw error;
-
   graph_global = graph;
   force
       .nodes(graph.nodes)
       .links(graph.links)
       .start();
-
-
   //首先加入“边”
   n = graph.nodes.length;
   edges = new Array(n);   //先声明一维
@@ -99,8 +91,9 @@ d3.json("data/graph.json", function(error, graph) {
     for(var j=0;j<n;j++)
     {
       edges[k][j] = Number.POSITIVE_INFINITY;
-      dists[k][j] = Number.POSITIVE_INFINITY;
-      paths[k][j] = Number.POSITIVE_INFINITY;
+      dists[k][j] = (k == j ? 0 : Number.POSITIVE_INFINITY);
+      //paths[k][j] = Number.POSITIVE_INFINITY;
+      //paths[k][j] = j;
     }
   }
   link = svg.selectAll(".link")
@@ -117,7 +110,17 @@ d3.json("data/graph.json", function(error, graph) {
         return (d.source.index*n+d.target.index).toString()+"_link";
       });
   link_init();
-
+  for(var i = 0; i < n; i ++)
+  for(var j = 0; j < n; j ++)
+  {
+    if(edges[i][j] != Number.POSITIVE_INFINITY){  
+      paths[i][j] = j;  
+    }
+    else
+    {  
+      paths[i][j] = -1;  
+    } 
+  }  
   //使用flolyd-warshall算法计算任意两点之间的最短距离和最短路径
   for(var k = 0; k < n; k ++)
   {
@@ -130,12 +133,12 @@ d3.json("data/graph.json", function(error, graph) {
           && dists[i][k]+dists[k][j]<dists[i][j])
         {
           dists[i][j] = dists[i][k]+dists[k][j];
-          paths[i][j] = k;
+          // paths[i][j] = k;
+          paths[i][j]=paths[i][k];
         }
       }
     }
   }
-
   //其次加入“点”
   node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -144,20 +147,17 @@ d3.json("data/graph.json", function(error, graph) {
       //将点的id设置为点的index。
       .attr("id", function(d){return d.index.toString()+"_node";})
       .call(force.drag);
-
   
   
   link.append("title")
       .text(function(d) {return "source:" + d.source.index + "\ntarget:" + d.target.index + "\nweight:" + d.weight;});
   node.append("title")
       .text(function(d) { return d.name; });
-
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
-
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });

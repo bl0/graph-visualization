@@ -43,7 +43,7 @@ function node_init()
 {
   node.style("fill", "#0000ff")
     .style("r", 5)
-    .style("stroke_opacity",1)
+    // .style("stroke_opacity",1)
     .style("stroke-width", 1.5);
     
 }
@@ -66,11 +66,14 @@ function init()
   node_init();
 }
 
+
 function get_path(i, j, path, index)
 {
+  if(paths[i][j] == -1)
+    return index;
   if(i == j)
    ;
-  else if(paths[i][j] == Number.POSITIVE_INFINITY) 
+  else if(paths[i][j] == j) 
   {
     var targetNode  = document.getElementById(j.toString()+"_node");
     path[index++] = parseInt(targetNode.id);
@@ -369,18 +372,7 @@ function closeness_centrality_display()
 function connected_component_display()
 {
   var Threshold = document.getElementById("Threshold_input").value;
-  link.remove();
-  link = svg.selectAll(".link")
-      .data(graph_global.links)
-    .enter().append("line")
-      .attr("class", "link")
-      .attr("id", function(d){
-        return (d.source.index*n+d.target.index).toString()+"_link";
-      });
-
-  link_init();
-  var odds = link.filter(function(d, i) { return d.weight <= Threshold; });
-  odds.remove();
+  link.style("stroke-width", function(d){return d.weight > Threshold ? link_width(d.weight) : 0; });
 }
 
 function Threshold_changed()
