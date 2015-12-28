@@ -279,13 +279,18 @@ function closeness_centrality_display()
 function connected_component_display()
 {
   var Threshold = document.getElementById("Threshold_input").value;
-  link.style("stroke-width", function(d){
+  link.remove();
+  link = svg.selectAll(".link")
+      .data(graph_global.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .attr("id", function(d){
+        return (d.source.index*n+d.target.index).toString()+"_link";
+      });
 
-    if(parseFloat(Threshold) <= d.weight)
-      return Math.sqrt(d.weight)/2;
-    else 
-      return 0;
-  });
+  link_init();
+  var odds = link.filter(function(d, i) { return d.weight <= Threshold; });
+  odds.remove();
 }
 
 function Threshold_changed()
