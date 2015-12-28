@@ -20,10 +20,15 @@
 </form><br/>
   <div class="form">
     <div id="path" style="style:block">
-    
-    
-      起点：<input type="number" id="source" class="s" value="0" min="0" max="199" />
-      终点：<input type="number" id="target" class="target" value="1" min="0" max="199" />
+      
+      <span class="input input--juro">
+          <input class="input__field input__field--juro" type="number" id="source" class="s" min="0" max="199" />
+          <label class="input__label input__label--juro" for="source">
+            <span class="input__label-content input__label-content--juro">起点：</span>
+          </label>
+        </span>
+<!--       起点：<input type="number" id="source" class="s" value="0" min="0" max="199" />
+ -->      终点：<input type="number" id="target" class="target" value="1" min="0" max="199" />
             <input type="button" value="确定" onclick="path_display()" autofocus="autofocus" /><br/>
       权值：<output type="text" value="0" class="centrality_show" id="view_weight" /> 
     </div>
