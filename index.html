@@ -25,7 +25,7 @@
       起点：<input type="number" class="source" value="0" min="0" max="199" />
       终点：<input type="number" class="target" value="1" min="0" max="199" />
             <input type="button" value="确定" onclick="path_display()" autofocus="autofocus" /><br/>
-      权值：<output type="text" value="0" class="view_weight" id="view_weight" /> 
+      权值：<output type="text" value="0" class="centrality_show" id="view_weight" /> 
     </div>
 
     <div id="mst" style="display:none;">
@@ -37,7 +37,8 @@
 
     <div id="centrality" style="display:none;">
       <input type="button" value="介数中心度" onclick="betweenness_centrality_display()" autofocus="autofocus"/>
-      <input type="button" value="紧密中心度" onclick="closeness_centrality_display()" />
+      <input type="button" value="紧密中心度" onclick="closeness_centrality_display()" /><br/>
+      中心度类型：<output type="text" value="介数中心度" class="centrality_type_show" id="centrality_type_show" /> 
     </div>
 
     <div id="connected_component" style="display:none;">

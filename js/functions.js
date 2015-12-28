@@ -88,8 +88,8 @@ function get_path(i, j, path, index)
 
 function path_display()
 {
-  var sourceIndex = parseInt(document.getElementsByClassName("source")[0].value);
-  var targetIndex = parseInt(document.getElementsByClassName("target")[0].value);
+  var sourceIndex = parseInt(document.getElementById("source").value);
+  var targetIndex = parseInt(document.getElementById("target").value);
   if (sourceIndex >= n || sourceIndex < 0) 
   {
     alert("请输入0~" + (n-1).toString() + "的数字");
@@ -313,6 +313,7 @@ function spanning_tree(root,searchnode,limit_length)
 
 function betweenness_centrality_display()
 {
+  document.getElementById("centrality_type_show").value = "介数中心度";
   var BC = new Array(n);
   var total = 0;
   for(var i = 0; i < n; i ++)
@@ -350,6 +351,7 @@ function betweenness_centrality_display()
 
 function closeness_centrality_display()
 {
+  document.getElementById("centrality_type_show").value = "紧密中心度";
   var CC = new Array(n);
   var total = 0;
    for(var i = 0; i < n; i ++)
