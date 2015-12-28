@@ -25,12 +25,11 @@
       起点：<input type="number" class="source" value="0" min="0" max="199" />
       终点：<input type="number" class="target" value="1" min="0" max="199" />
             <input type="button" value="确定" onclick="path_display()" autofocus="autofocus" /><br/>
-      权值：<output type="text" value="0" class="view_weight" id="view_weight">
+      权值：<input type="text" value="0" class="view_weight" id="view_weight">
     </div>
 
     <div id="mst" style="display:none;">
       根节点：<input type="number" class="root" value="0" min="0" max="199" onchange="mst_display()"/>
-      权值：<output type="text" value="0" class="view_weight" id="view_tree_weight">
     </div>
 
     <div id="centrality" style="display:none;">
@@ -39,8 +38,8 @@
     </div>
 
     <div id="connected_component" style="display:none;">
-           <input class="Threshold" id="Threshold" type="range" min="0" max="30" step="0.01" value="0" onchange="Threshold_changed()" />
-           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="30" step="1" value="0" onchange="Threshold_input_changed()" />
+           <input class="Threshold" id="Threshold" type="range" min="0" max="35" step="0.01" value="0" onchange="Threshold_changed()" />
+           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="35" step="1" value="0" onchange="Threshold_input_changed()" />
     </div>
   </div>
   <div class="svg"></div>           
@@ -55,8 +54,8 @@ var color = d3.scale.category20();
 var force = d3.layout.force()
     .charge(-100)
     .linkDistance(100)
-    .gravity(0.2)
-    .linkStrength(0.3)
+    .gravity(0.1)
+    .linkStrength(1)
     .size([width, height]);
 
 var svg = d3.select(".svg").append("svg")
@@ -99,8 +98,9 @@ d3.json("data/graph.json", function(error, graph) {
     for(var j=0;j<n;j++)
     {
       edges[k][j] = Number.POSITIVE_INFINITY;
-      dists[k][j] = Number.POSITIVE_INFINITY;
-      paths[k][j] = Number.POSITIVE_INFINITY;
+      dists[k][j] = (k == j ? 0 : Number.POSITIVE_INFINITY);
+      //paths[k][j] = Number.POSITIVE_INFINITY;
+      //paths[k][j] = j;
     }
   }
   link = svg.selectAll(".link")
@@ -118,6 +118,18 @@ d3.json("data/graph.json", function(error, graph) {
       });
   link_init();
 
+  for(var i = 0; i < n; i ++)
+  for(var j = 0; j < n; j ++)
+  {
+    if(edges[i][j] != Number.POSITIVE_INFINITY){  
+      paths[i][j]=j;  
+    }
+    else
+    {  
+      paths[i][j]=-1;  
+    } 
+  }  
+
   //使用flolyd-warshall算法计算任意两点之间的最短距离和最短路径
   for(var k = 0; k < n; k ++)
   {
@@ -130,7 +142,8 @@ d3.json("data/graph.json", function(error, graph) {
           && dists[i][k]+dists[k][j]<dists[i][j])
         {
           dists[i][j] = dists[i][k]+dists[k][j];
-          paths[i][j] = k;
+          // paths[i][j] = k;
+          paths[i][j]=paths[i][k];
         }
       }
     }
