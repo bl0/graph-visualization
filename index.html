@@ -71,10 +71,13 @@ var dists;
 var paths;
 //node指向实际上画出来的那些点
 var node;
+var graph_global;
+
 
 d3.json("data/graph.json", function(error, graph) {
   if (error) throw error;
 
+  graph_global = graph;
   force
       .nodes(graph.nodes)
       .links(graph.links)
