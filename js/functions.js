@@ -67,9 +67,11 @@ function init()
 
 function get_path(i, j, path, index)
 {
+  if(paths[i][j] == -1)
+    return index;
   if(i == j)
    ;
-  else if(paths[i][j] == Number.POSITIVE_INFINITY) 
+  else if(paths[i][j] == j) 
   {
     var targetNode  = document.getElementById(j.toString()+"_node");
     path[index++] = parseInt(targetNode.id);
@@ -101,57 +103,65 @@ function path_display()
   var path_length = document.getElementById("view_weight");
   var path = new Array(n);
   var index = 1;
-  var total_weight = 0;
   path[0] = sourceIndex;
   index = get_path(sourceIndex, targetIndex, path, index);
-  for (var i = 0; i < index-1; i++) 
+  if(paths[sourceIndex][targetIndex] == -1)
   {
-    total_weight += edges[path[i]][path[i+1]];
+    path_length.value = "POSITIVE_INFINITY";
+    alert("起点与终点不连通");
   }
-  path_length.value = total_weight;
-  node.style("fill", function(d){
-    for(var i = 0; i < index; i ++)
+  else
+  {
+    var total_weight = 0;
+    for (var i = 0; i < index-1; i++) 
     {
-      if(path[i] == d.index)
+      total_weight += edges[path[i]][path[i+1]];
+    }  
+    path_length.value = total_weight;
+    node.style("fill", function(d){
+      for(var i = 0; i < index; i ++)
       {
-        return "#FA0404";
+        if(path[i] == d.index)
+        {
+          return "#FA0404";
+        }
       }
-    }
-    return "#0000ff";
-  });
-  link.style("stroke", function(d){
-    for(var i = 0; i < index-1; i ++)
-    {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      return "#0000ff";
+    });
+    link.style("stroke", function(d){
+      for(var i = 0; i < index-1; i ++)
       {
-        return "#0A0A0A";
+        if((path[i] == d.source.index && path[i+1] == d.target.index)
+          || (path[i+1] == d.source.index && path[i] == d.target.index))
+        {
+          return "#0A0A0A";
+        }
       }
-    }
-    return "#999";
-  });
-    link.style("stroke-opacity", function(d){
-    for(var i = 0; i < index-1; i ++)
-    {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      return "#999";
+    });
+      link.style("stroke-opacity", function(d){
+      for(var i = 0; i < index-1; i ++)
       {
-        return 1;
+        if((path[i] == d.source.index && path[i+1] == d.target.index)
+          || (path[i+1] == d.source.index && path[i] == d.target.index))
+        {
+          return 1;
+        }
       }
-    }
-    return 0.1;
-  });
-      link.style("stroke", function(d){
-    for(var i = 0; i < index-1; i ++)
-    {
-      if((path[i] == d.source.index && path[i+1] == d.target.index)
-        || (path[i+1] == d.source.index && path[i] == d.target.index))
+      return 0.1;
+    });
+        link.style("stroke", function(d){
+      for(var i = 0; i < index-1; i ++)
       {
-        return "#0A0A0A";
+        if((path[i] == d.source.index && path[i+1] == d.target.index)
+          || (path[i+1] == d.source.index && path[i] == d.target.index))
+        {
+          return "#0A0A0A";
+        }
       }
-    }
-    return "#999";
-  });
+      return "#999";
+    });
+  }
 }
 
 function mst_display()
@@ -210,7 +220,7 @@ function mst_display()
     return "#999";
   });
 }
-}
+
 
 // function spanning_tree()
 // {
@@ -268,7 +278,34 @@ function mst_display()
 
 function betweenness_centrality_display()
 {
-  alert("betweenness_centrality_display");
+  var BC = new Array(n);
+  var total = 0;
+  for(var i = 0; i < n; i ++)
+  {
+    BC[i] = 0;
+  }
+  for(var i = 0; i < n; i ++)
+  {
+    for(var j = 0; j < n; j ++)
+    {
+      if(i == j) continue;
+      path = new Array(n);
+      path[0] = i;
+      index = 1;
+      index = get_path(i, j, path, index);
+      for(var k = 0; k < index; k ++)
+      {
+        BC[path[k]] ++;
+        total ++;
+      }
+    }
+  }
+  for(var i = 0; i < n; i ++)
+  {
+    BC[i] = BC[i] / total;
+  }
+
+  alert(BC[0]);
 }
 
 function closeness_centrality_display()
@@ -279,18 +316,7 @@ function closeness_centrality_display()
 function connected_component_display()
 {
   var Threshold = document.getElementById("Threshold_input").value;
-  link.remove();
-  link = svg.selectAll(".link")
-      .data(graph_global.links)
-    .enter().append("line")
-      .attr("class", "link")
-      .attr("id", function(d){
-        return (d.source.index*n+d.target.index).toString()+"_link";
-      });
-
-  link_init();
-  var odds = link.filter(function(d, i) { return d.weight <= Threshold; });
-  odds.remove();
+  link.style("stroke-width", function(d){return d.weight > Threshold ? link_width(d.weight) : 0; });
 }
 
 function Threshold_changed()
