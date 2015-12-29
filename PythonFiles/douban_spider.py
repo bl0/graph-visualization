@@ -22,7 +22,7 @@ class MovieNode:
 
 
 def getInfo(url):
-    for x in range(0,10):
+    for x in range(1,10):
         getPageInfo(url+'?start='+ `25*x` +'&filter=')
 
 def getPageInfo(url):
@@ -37,7 +37,7 @@ def getPageInfo(url):
     star_list = re.findall(reg_star, html)
     topic_list = re.findall(reg_topic, html)
     href_list = re.findall(reg_href, html)
-    for x in range(0,25):
+    for x in range(14,25):
         node = MovieNode(href_list[x][-10:-3],title_list[x][51:-1],detail_list[x][41:-26].split('\n'),star_list[x][12:-1],topic_list[x][6:-1],href_list[x][6:-2])
         namelist.append(node)
         # node.__print__(fp_node)
