@@ -393,10 +393,68 @@ function closeness_centrality_display()
     });
 }
 
+function dfs(curIndex, colors, thresold, visited_node)
+{
+  if(curIndex >= n)
+    return;
+  var single_node = true;
+  for(var i = 0; i < n; i ++)
+  {
+    if(visited_node[i] == false && edges[curIndex][i] != Number.POSITIVE_INFINITY && edges[curIndex][i] > thresold)
+    {
+      single_node = false;
+      colors[i] = colors[curIndex];
+      visited_node[i] = true;
+      dfs(i, colors, thresold, visited_node);
+    }
+  }
+  return single_node;
+}
+
 function connected_component_display()
 {
+  var color = d3.scale.category20();
   var Threshold = document.getElementById("Threshold_input").value;
-  link.style("stroke-width", function(d){return d.weight > Threshold ? link_width(d.weight) : 0; });
+  var colors = new Array(n);
+  var color_count = 0;
+  var visited_node = new Array(n);
+  for(var i = 0; i < n; i ++)
+  {
+    visited_node[i] = false;
+  }
+  for(var i = 0; i < n; i ++)
+  {
+    if(visited_node[i] == false)
+    {
+      colors[i] = color(color_count);
+      var is_single = dfs(i, colors, Threshold, visited_node);
+      color_count ++;
+    }
+  }
+  node.style("fill", function(d, i)
+  {
+    return colors[i];
+  });
+  var link_count = 0;
+  link.style("stroke-width", function(d)
+  {
+    if(d.weight > Threshold)
+    {
+      link_count ++;
+      return link_width(d.weight);
+    }
+    else
+    {
+      return 0;
+    }
+  });
+  var opacity = 1 / (1 + Math.log(link_count + 1));
+  link.style("stroke", function(d)
+  {
+    return colors[d.target.index];
+  });
+
+  link.style("stroke-opacity", opacity);
 }
 
 function Threshold_changed()
