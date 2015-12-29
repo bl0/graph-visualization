@@ -72,7 +72,10 @@ def getPageComments(url,node):
             print(people_id + ' ' + `star` + '\n')
         
 def getHtml(url):
-    request = urllib2.Request(url)
+    headers = {
+        'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
+    }
+    request = urllib2.Request(url = url,headers = headers)
     response = urllib2.urlopen(request) 
     html = response.read()
     return html
