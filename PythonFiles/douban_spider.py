@@ -27,7 +27,7 @@ def getInfo(url):
 
 def getPageInfo(url):
     global reg_detail,reg_title,reg_star,reg_topic,reg_href,namelist,fp_edge
-    time.sleep(5)
+    # time.sleep(5)
     html = getHtml(url)
     # fp = open('yeah1.txt' , 'w')
     # fp.write(html)
@@ -41,7 +41,12 @@ def getPageInfo(url):
         node = MovieNode(href_list[x][-10:-3],title_list[x][51:-1],detail_list[x][41:-26].split('\n'),star_list[x][12:-1],topic_list[x][6:-1],href_list[x][6:-2])
         namelist.append(node)
         # node.__print__(fp_node)
-        getComments(node.m_href+'collections',namelist[MovieNode.nodeNum - 1])
+        try:
+            getComments(node.m_href+'collections',namelist[MovieNode.nodeNum - 1])
+        except:
+            print(node.m_title + '页面不存在')
+            continue
+        print(MovieNode.nodeNum)
         fp_edge.write('$\n')
 
 
@@ -82,6 +87,7 @@ def getHtml(url):
     return html
 
 def calculating(namelist):
+    global fp_link
     for i in range(0,MovieNode.nodeNum):
         for j in range(i+1,MovieNode.nodeNum):
             firstWeight = 0
@@ -92,6 +98,7 @@ def calculating(namelist):
                 else:
                     firstWeight += 1
                     secondWeight += 1.0/(math.abs(namelist[i].m_commentDic[key]-namelist[j].m_commentDic[key])/10 + 1)
+            fp_link.write(`i` + ' ' + `j` + ' ' + `firstWeight + secondWeight` + '\n')
             print(`i` + ' ' + `j` + ' ' + `firstWeight + secondWeight` + '\n')
 
                     
@@ -104,6 +111,7 @@ url = 'http://movie.douban.com/top250'
 namelist = []
 fp_info = open('info.txt' , 'w')
 fp_edge = open('graph.txt', 'w')
+fp_link = open('link.txt','w')
 # fp_node = open('node.txt', 'w')
 reg_commentNum = re.compile(r'\d+人看过')
 reg_detail = re.compile(r'<p class="">\n.+\n.+\n.+<')
@@ -122,5 +130,6 @@ getInfo(url)
 calculating(namelist)
 fp_info.write(`MovieNode.nodeNum + 1`+' '+`edgeNum`)
 fp_info.close()
+fp_link.close()
 fp_edge.close()
 # fp_node.close()
