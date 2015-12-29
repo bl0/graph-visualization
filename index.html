@@ -16,6 +16,7 @@
 </head>
 
 <body bgcolor="#94F249">
+  <!-- 功能选择菜单 -->
   <form>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <select class="btn btn-radius btn-primary" name="chooseFunction" onchange="checkField(this.selectedIndex)">
@@ -26,7 +27,9 @@
       </select>
   </form>
   <br/>
+  <!-- 功能菜单 -->
   <div class="form">
+    <!-- 最短路径 -->
     <div id="path" style="style:block">     
       <span class="input input--juro">
           <input class="input__field input__field--juro" type="number" id="source" min="0" max="199" />
@@ -51,6 +54,7 @@
       </span>
     </div>
 
+    <!-- 最小生成树 -->
     <div id="mst" style="display:none;">
       <span class="input input--juro">
           <input class="input__field input__field--juro" id="root" type="number" value="0" min="0" max="199" onchange="mst_display()"/>
@@ -70,6 +74,7 @@
       </span>
     </div>
 
+    <!-- 中心度 -->
     <div id="centrality" style="display:none;">
       <input type="button" class="btn btn-primary" value="介数中心度" onclick="betweenness_centrality_display()" autofocus="autofocus"/>
       <input type="button" class="btn btn-primary" value="紧密中心度" onclick="closeness_centrality_display()" /><br/>
@@ -77,8 +82,8 @@
     </div>
 
     <div id="connected_component" style="display:none;">
-           <input class="Threshold" id="Threshold" type="range" min="0" max="35" step="0.01" value="0" onchange="Threshold_changed()" />
-           <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="35" step="1" value="0" onchange="Threshold_input_changed()" />
+      <input class="Threshold" id="Threshold" type="range" min="0" max="35" step="0.01" value="0" onchange="Threshold_changed()" />
+      <input class="Threshold_input" id="Threshold_input" type="number" min="0" max="35" step="1" value="0" onchange="Threshold_input_changed()" />
     </div>
   </div>
   <div class="svg"></div>           
@@ -103,15 +108,16 @@ var svg = d3.select(".svg").append("svg")
 var link;
 //edges是一个二维数组，储存领接矩阵
 var edges;
+//dists是一个二维数组，储存任意两点之间的最短路径
 var dists;
+//paths是一个二维数组，path[i][j]储存从i到j的最短路径中i的后继节点
 var paths;
 //node指向实际上画出来的那些点
 var node;
+//n为节点的数据规模
 var n;
-var graph_global;
 d3.json("data/graph.json", function(error, graph) {
   if (error) throw error;
-  graph_global = graph;
   force
       .nodes(graph.nodes)
       .links(graph.links)
@@ -130,28 +136,28 @@ d3.json("data/graph.json", function(error, graph) {
     {
       edges[k][j] = Number.POSITIVE_INFINITY;
       dists[k][j] = (k == j ? 0 : Number.POSITIVE_INFINITY);
-      //paths[k][j] = Number.POSITIVE_INFINITY;
-      //paths[k][j] = j;
     }
   }
   link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      //为了方便查询，此处将边的id设为source.index*n+target.index。
-      //其中n为节点的size，此处为200
       .attr("id", function(d){
         edges[d.source.index][d.target.index] = d.weight;
         dists[d.source.index][d.target.index] = d.weight;
         edges[d.target.index][d.source.index] = d.weight;
         dists[d.target.index][d.source.index] = d.weight;
+
+        //为了方便查询，此处将边的id设为source.index*n+target.index。
+        //其中n为节点的size，此处为200
         return (d.source.index*n+d.target.index).toString()+"_link";
       });
   link_init();
   for(var i = 0; i < n; i ++)
   for(var j = 0; j < n; j ++)
   {
-    if(edges[i][j] != Number.POSITIVE_INFINITY){  
+    if(edges[i][j] != Number.POSITIVE_INFINITY)
+    {  
       paths[i][j] = j;  
     }
     else
@@ -171,7 +177,6 @@ d3.json("data/graph.json", function(error, graph) {
           && dists[i][k]+dists[k][j]<dists[i][j])
         {
           dists[i][j] = dists[i][k]+dists[k][j];
-          // paths[i][j] = k;
           paths[i][j]=paths[i][k];
         }
       }
