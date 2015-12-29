@@ -22,8 +22,12 @@ class MovieNode:
 
 
 def getInfo(url):
-    for x in range(1,10):
-        getPageInfo(url+'?start='+ `25*x` +'&filter=')
+    for x in range(1,8):
+        try:
+            getPageInfo(url+'?start='+ `25*x` +'&filter=')
+        except:
+            print(node.m_title + '页面不存在')
+            continue
 
 def getPageInfo(url):
     global reg_detail,reg_title,reg_star,reg_topic,reg_href,namelist,fp_edge
@@ -37,7 +41,7 @@ def getPageInfo(url):
     star_list = re.findall(reg_star, html)
     topic_list = re.findall(reg_topic, html)
     href_list = re.findall(reg_href, html)
-    for x in range(14,25):
+    for x in range(0,25):
         node = MovieNode(href_list[x][-10:-3],title_list[x][51:-1],detail_list[x][41:-26].split('\n'),star_list[x][12:-1],topic_list[x][6:-1],href_list[x][6:-2])
         namelist.append(node)
         # node.__print__(fp_node)
@@ -47,7 +51,7 @@ def getPageInfo(url):
             print(node.m_title + '页面不存在')
             continue
         print(MovieNode.nodeNum)
-        fp_edge.write('$\n')
+        fp_edge.write('$‘ + ' ' + `MovieNode.nodeNum` + \n')
 
 
 def getComments(url,node):
@@ -121,12 +125,12 @@ reg_topic = re.compile(r'"inq">.+<')
 reg_href = re.compile(r'href="http://movie.douban.com/subject/.+/">')
 reg_comment = re.compile(r'http://www.douban.com/people/\d+/" .+\s+.+\s+.+\s+.+\s+.+\s+.+\s+.+')
 
-# try:
-getInfo(url)
-# except:
-#     print("程序已跪") 
-# else:
-#     print("程序正常退出") 
+try:
+    getInfo(url)
+except:
+    print("程序已跪") 
+else:
+    print("程序正常退出") 
 calculating(namelist)
 fp_info.write(`MovieNode.nodeNum + 1`+' '+`edgeNum`)
 fp_info.close()
