@@ -1,3 +1,4 @@
+// 根据选择的功能切换功能视图
 function checkField(id)
 {
   var path = document.getElementById("path");
@@ -39,20 +40,21 @@ function checkField(id)
   }
 }  
 
-function node_init()
-{
-  node.style("fill", "#0000ff")
-    .style("r", 5)
-    // .style("stroke_opacity",1)
-    .style("stroke-width", 1.5);
-    
-}
-
+// 返回权值为weight的边所对应的宽度
 function link_width(weight)
 {
   return Math.sqrt(weight)/2;
 }
 
+// 将节点的style初始化
+function node_init()
+{
+  node.style("fill", "#0000ff")
+    .style("r", 5)
+    .style("stroke-width", 1.5);
+}
+
+// 将边的style初始化
 function link_init()
 {
   link.style("stroke", "#999")
@@ -60,13 +62,15 @@ function link_init()
     .style("stroke-width", function(d){return link_width(d.weight)});
 }
 
+// 将点和边的style初始化
 function init()
 {
   link_init();
   node_init();
 }
 
-
+// 根据warshall算法算出来的路径paths计算从起点i到终点j的路径path。
+// 其中index为路径的长度。
 function get_path(i, j, path, index)
 {
   if(paths[i][j] == -1)
@@ -86,6 +90,7 @@ function get_path(i, j, path, index)
   return index;
 }
 
+// 最短路径的可视化
 function path_display()
 {
   var sourceIndex = parseInt(document.getElementById("source").value);
@@ -147,6 +152,7 @@ function path_display()
   });
 }
 
+// 最小生成树的可视化
 function mst_display()
 {
   var path = new Array(n);
@@ -242,6 +248,7 @@ function SearchNode()
   this.prev = -1;
 }
 
+// 使用prim算法生成最小生成树
 function spanning_tree(root,searchnode,limit_length)
 {
   var search_num;
@@ -311,6 +318,7 @@ function spanning_tree(root,searchnode,limit_length)
   return path_length;
 }
 
+// 介数中心度的可视化
 function betweenness_centrality_display()
 {
   document.getElementById("centrality_type_show").value = "介数中心度";
@@ -320,6 +328,7 @@ function betweenness_centrality_display()
   {
     BC[i] = 0;
   }
+  //计算介数中心度
   for(var i = 0; i < n; i ++)
   {
     for(var j = 0; j < n; j ++)
@@ -336,11 +345,12 @@ function betweenness_centrality_display()
       }
     }
   }
-
   for(var i = 0; i < n; i ++)
   {
     BC[i] = BC[i] / total;
   }
+
+  //介数中心度可视化
   node.style("fill", function(d, i){
       var r = 5110*BC[i];
       var g = 0;
@@ -349,15 +359,18 @@ function betweenness_centrality_display()
     });
 }
 
+//紧密中心度
 function closeness_centrality_display()
 {
   document.getElementById("centrality_type_show").value = "紧密中心度";
   var CC = new Array(n);
   var total = 0;
-   for(var i = 0; i < n; i ++)
+  for(var i = 0; i < n; i ++)
   {
     CC[i] = 0;
   }
+
+  //计算紧密中心度
   for(var i = 0; i < n; i ++)
   {
     for(var j = 0; j < n; j ++)
@@ -383,6 +396,8 @@ function closeness_centrality_display()
       }
     }
   }
+
+  // 紧密中心度可视化
   node.style("fill", function(d, i){
       if(CC[i] > 1000*n*0.9)
         return "black";
@@ -393,24 +408,23 @@ function closeness_centrality_display()
     });
 }
 
+// 深度优先搜索获取与当前节点curIndex相连的节点，并修改其颜色值
 function dfs(curIndex, colors, thresold, visited_node)
 {
   if(curIndex >= n)
     return;
-  var single_node = true;
   for(var i = 0; i < n; i ++)
   {
     if(visited_node[i] == false && edges[curIndex][i] != Number.POSITIVE_INFINITY && edges[curIndex][i] > thresold)
     {
-      single_node = false;
       colors[i] = colors[curIndex];
       visited_node[i] = true;
       dfs(i, colors, thresold, visited_node);
     }
   }
-  return single_node;
 }
 
+// 连通分量的可视化
 function connected_component_display()
 {
   var color = d3.scale.category20();
@@ -422,12 +436,14 @@ function connected_component_display()
   {
     visited_node[i] = false;
   }
+
+  //遍历所有还未访问过的节点
   for(var i = 0; i < n; i ++)
   {
     if(visited_node[i] == false)
     {
       colors[i] = color(color_count);
-      var is_single = dfs(i, colors, Threshold, visited_node);
+      dfs(i, colors, Threshold, visited_node);
       color_count ++;
     }
   }
@@ -457,6 +473,7 @@ function connected_component_display()
   link.style("stroke-opacity", opacity);
 }
 
+// 阈值发生改变
 function Threshold_changed()
 {
   var Threshold = document.getElementById("Threshold").value;
@@ -465,6 +482,7 @@ function Threshold_changed()
   connected_component_display();
 }
 
+// 阈值发生改变
 function Threshold_input_changed()
 {
   var Threshold = document.getElementById("Threshold_input").value;

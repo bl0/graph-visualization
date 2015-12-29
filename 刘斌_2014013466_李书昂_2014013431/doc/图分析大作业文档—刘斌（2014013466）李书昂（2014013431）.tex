@@ -53,7 +53,7 @@
 
 \section{项目概况} % (fold)
 	\paragraph{}
-	本次大作业，我们完成了包括数据采集，网络图的构建，核心算法的实现，可视分析等所有必做功能和选作功能。其中数据采集自豆瓣，网络图使用json文件储存，核心算法使用JavaScript实现，可视分析使用Html + JS + CSS与用户进行交互。
+	我们完成了包括数据采集，网络图的构建，核心算法的实现，可视分析等所有必做功能和选作功能。其中数据采集自豆瓣，网络图使用json文件储存，核心算法使用JavaScript实现，可视分析使用Html + JS + CSS与用户进行交互。
 % section 项目概况 (end)
 
 \section{项目文件使用说明} % (fold)
@@ -68,7 +68,8 @@
 
 \section{网络图的构建} % (fold)
 	\paragraph{}
-	由于采集下来的数据保存格式为txt，无法方便的读入网页，因此我们使用C++对txt文件进行处理，将其转化为json格式的文件。具体代码请查阅“data/changeDateToJSON/”目录下的changeDateToJSON工程。
+	由于采集下来的数据保存格式为txt，无法方便的读入网页，因此我们使用C++对txt文件进行处理，将其转化为json格式的文件。具体代码请查阅“data/changeDateToJSON/”目录下的changeDateToJSON工程。在网页中，节点被映射为圆，边被映射为直线，且直线的宽度为与边的权值相联系。此处我们使用的权值到宽度的函数是：
+		$$width = Math.sqrt(weight)/2;$$
 % section 网络图的构建 (end)
 
 \section{服务器搭建} % (fold)

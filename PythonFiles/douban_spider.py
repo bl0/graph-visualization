@@ -22,11 +22,11 @@ class MovieNode:
 
 
 def getInfo(url):
-    for x in range(0,1):
+    for x in range(0,10):
         getPageInfo(url+'?start='+ `25*x` +'&filter=')
 
 def getPageInfo(url):
-    global reg_detail,reg_title,reg_star,reg_topic,reg_href,namelist
+    global reg_detail,reg_title,reg_star,reg_topic,reg_href,namelist,fp_edge
     time.sleep(5)
     html = getHtml(url)
     # fp = open('yeah1.txt' , 'w')
@@ -42,6 +42,7 @@ def getPageInfo(url):
         namelist.append(node)
         # node.__print__(fp_node)
         getComments(node.m_href+'collections',namelist[MovieNode.nodeNum - 1])
+        fp_edge.write('$\n')
 
 
 def getComments(url,node):
@@ -49,7 +50,7 @@ def getComments(url,node):
     html = getHtml(url)
     node.m_commentNum = int(re.findall(reg_commentNum,html)[0][0:-9],10)
     print(node.m_commentNum)
-    for x in range(0,20):
+    for x in range(0,10):
         getPageComments(url + '?start=' + `20*x`,node)
 
 def getPageComments(url,node):
@@ -69,7 +70,7 @@ def getPageComments(url,node):
             people_id = re.findall(reg_people,comment_list[x])[0][7:]
             star = int(re.findall(reg_star,comment_list[x])[0][7:],10)
             node.m_commentDic[people_id] = star
-            print(people_id + ' ' + `star` + '\n')
+            fp_edge.write(people_id + ' ' + `star` + '\n')
         
 def getHtml(url):
     headers = {
@@ -111,7 +112,13 @@ reg_star = re.compile(r'"v:average">.+<')
 reg_topic = re.compile(r'"inq">.+<')
 reg_href = re.compile(r'href="http://movie.douban.com/subject/.+/">')
 reg_comment = re.compile(r'http://www.douban.com/people/\d+/" .+\s+.+\s+.+\s+.+\s+.+\s+.+\s+.+')
+
+# try:
 getInfo(url)
+# except:
+#     print("程序已跪") 
+# else:
+#     print("程序正常退出") 
 calculating(namelist)
 fp_info.write(`MovieNode.nodeNum + 1`+' '+`edgeNum`)
 fp_info.close()
