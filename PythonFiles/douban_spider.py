@@ -22,16 +22,12 @@ class MovieNode:
 
 
 def getInfo(url):
-    for x in range(1,8):
-        try:
-            getPageInfo(url+'?start='+ `25*x` +'&filter=')
-        except:
-            print(node.m_title + '页面不存在')
-            continue
+    for x in range(0,10):
+        getPageInfo(url+'?start='+ `25*x` +'&filter=')
 
 def getPageInfo(url):
     global reg_detail,reg_title,reg_star,reg_topic,reg_href,namelist,fp_edge
-    # time.sleep(5)
+    time.sleep(5)
     html = getHtml(url)
     # fp = open('yeah1.txt' , 'w')
     # fp.write(html)
@@ -64,7 +60,7 @@ def getComments(url,node):
 
 def getPageComments(url,node):
     global reg_comment,fp_edge,edgeNum
-    # time.sleep(5)
+    time.sleep(5)
     html = getHtml(url)
     # fp = open('yeah2.txt' , 'w')
     # fp.write(html)
@@ -80,6 +76,7 @@ def getPageComments(url,node):
             star = int(re.findall(reg_star,comment_list[x])[0][7:],10)
             node.m_commentDic[people_id] = star
             fp_edge.write(people_id + ' ' + `star` + '\n')
+            print(people_id + ' ' + `star` + '\n')
         
 def getHtml(url):
     headers = {
@@ -105,11 +102,6 @@ def calculating(namelist):
             fp_link.write(`i` + ' ' + `j` + ' ' + `firstWeight + secondWeight` + '\n')
             print(`i` + ' ' + `j` + ' ' + `firstWeight + secondWeight` + '\n')
 
-                    
-            
-        
-
-
 edgeNum = 0
 url = 'http://movie.douban.com/top250'
 namelist = []
@@ -125,6 +117,7 @@ reg_topic = re.compile(r'"inq">.+<')
 reg_href = re.compile(r'href="http://movie.douban.com/subject/.+/">')
 reg_comment = re.compile(r'http://www.douban.com/people/\d+/" .+\s+.+\s+.+\s+.+\s+.+\s+.+\s+.+')
 
+# getInfo(url)
 try:
     getInfo(url)
 except:
