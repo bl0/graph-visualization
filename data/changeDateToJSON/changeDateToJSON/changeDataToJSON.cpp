@@ -17,20 +17,49 @@
 #include <string>
 #include <cstring>
 using namespace std;
-int maxn = 200;
+int maxn = 250;
 int edge_sample_dist = 10;
 std::vector<int> source;
 std::vector<int> target;
 std::vector<double> weight;
-std::vector<string> ID;
-std::vector<string> name;
+
+class Node
+{
+public:
+	string ID;
+	string name;
+	string href;
+	string star;
+	string description;
+	string detail;
+
+	friend ostream& operator << (ostream& out, Node& n);
+	friend istream& operator >> (istream& in, Node& n);
+};
+
+ostream& operator << (ostream& out, Node& node)
+{
+	out << "		{" << endl;
+	out << "			\"ID\": \"" << node.ID << "\"," << endl;
+	out << "			\"name\": \"" << node.name << "\"," << endl;
+	out << "			\"href\": \"" << node.href << "\"," << endl;
+	out << "			\"star\": \"" << node.star << "\"," << endl;
+	out << "			\"description\": \"" << node.description << "\"," << endl;
+	out << "			\"detail\": \"" << node.detail << "\"" << endl;
+	out << "		}";
+}
+
+istream& operator >> (istream& in, Node& node)
+{
+	int index;
+	in >> index >> node.ID >> node.name 
+	   >> node.href >> node.star >> node.description;
+	getline(in, node.detail);
+}
+
+std::vector<Node> nodes;
 int main()
 {
-	fstream fout_temp("node.txt", ios::out);
-	for(int i = 0; i < 971; i ++)
-		if(i < maxn)
-			fout_temp << "ID" << i << " name" << i << endl;
-	fout_temp.close();
 	fstream fin_links("link.txt", ios::in);
 	fstream fin_nodes("node.txt", ios::in);
 	fstream fout_graph("../../graph.json", ios::out);
@@ -46,31 +75,24 @@ int main()
 		}
 		
 	}
-	string id, n;
-	while(fin_nodes >> id >> n)
+	Node node;
+	while(fin_nodes >> node)
 	{
-		ID.push_back(id);
-		name.push_back(n);
+		nodes.push_back(node);
 	}
 	fout_graph << "{" << endl;
 	fout_graph << "	\"nodes\":" << endl;
 	fout_graph << "	[" << endl;
-	for(int i = 0; i < ID.size()-1; i ++)
+	for(int i = 0; i < nodes.size()-1; i ++)
 	{
-		fout_graph << "		{" << endl;
-		fout_graph << "			\"ID\": \"" << ID[i] << "\"," << endl;
-		fout_graph << "			\"name\": \"" << name[i] << "\"" << endl;
-		fout_graph << "		}," << endl;
+		fout_graph << nodes[i] << "," << endl;
 	}
-	fout_graph << "		{" << endl;
-	fout_graph << "			\"ID\": \"" << ID.back() << "\"," << endl;
-	fout_graph << "			\"name\": \"" << name.back() << "\"" << endl;
-	fout_graph << "		}" << endl;
+	fout_graph << nodes.back();
 	fout_graph << "	 ]," << endl;
 	fout_graph << "	\"links\":" << endl;
 	fout_graph << "	[" << endl;
 	for(int i = 0; i < source.size()-1; i ++)
-	if(i % edge_sample_dist == 0)
+	if(i % edge_sample_dist == 0 && weight[i] > 0)
 	{
 		fout_graph << "		{" << endl;
 		fout_graph << "			\"source\": " << source[i] << "," << endl;

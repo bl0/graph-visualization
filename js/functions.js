@@ -43,7 +43,8 @@ function checkField(id)
 // 返回权值为weight的边所对应的宽度
 function link_width(weight)
 {
-  return Math.sqrt(weight)/2;
+  // return Math.sqrt(weight)/2;
+  return Math.log(weight) / 2;
 }
 
 // 将节点的style初始化
@@ -349,10 +350,9 @@ function betweenness_centrality_display()
   {
     BC[i] = BC[i] / total;
   }
-
   //介数中心度可视化
   node.style("fill", function(d, i){
-      var r = 5110*BC[i];
+      var r = (1000*BC[i])*(1000*BC[i]);
       var g = 0;
       var b = 255 - r;
       return d3.rgb(r, g, b);
@@ -401,7 +401,7 @@ function closeness_centrality_display()
   node.style("fill", function(d, i){
       if(CC[i] > 1000*n*0.9)
         return "black";
-      var r = 255 - (CC[i] - 12000)*0.9;
+      var r = 255 - Math.sqrt((CC[i] - 9000))*6;
       var g = 0;
       var b = 255 - r;
       return d3.rgb(r, g, b);
