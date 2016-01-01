@@ -22,7 +22,7 @@ class MovieNode:
 
 
 def getInfo(url):
-    for x in range(0,1):
+    for x in range(0,10):
         getPageInfo(url+'?start='+ `25*x` +'&filter=')
 
 def getPageInfo(url):
@@ -34,7 +34,7 @@ def getPageInfo(url):
     star_list = re.findall(reg_star, html)
     topic_list = re.findall(reg_topic, html)
     href_list = re.findall(reg_href, html)
-    for x in range(0,1):
+    for x in range(0,25):
         node = MovieNode(href_list[x][-10:-3],title_list[x][51:-1],detail_list[x][41:-26].split('\n'),star_list[x][12:-1],topic_list[x][6:-1],href_list[x][6:-2])
         namelist.append(node)
         # node.__print__(fp_node)
@@ -62,12 +62,12 @@ def getPageComments(url,url_head,node,page_num,_count):
     print(_count)
     time.sleep(2)
     html = getHtml(url)
-    fp = open('yeah.html' , 'w')
-    fp.write(html)
-    fp.close()
+    # fp = open('yeah.html' , 'w')
+    # fp.write(html)
+    # fp.close()
     reg_nextPage = re.compile(r'href=".start=\d+.+c')
     reg_people = re.compile(r'people/.+/"')
-    reg_star = re.compile(r'allstar\d+')
+    reg_star = re.compile(r'allstar\d+') 
     comment_list = re.findall(reg_comment,html)
     for x in range(0,len(comment_list)):
         flag = 1
@@ -80,7 +80,7 @@ def getPageComments(url,url_head,node,page_num,_count):
             fp_edge.write(people_id + ' ' + `star` + '\n')
     if _count < page_num and flag == 1:
         nextpage = re.findall(reg_nextPage,html)[0][6:-16]
-        return getPageComments(url_head + nextpage,url_head,node,page_num,_count)
+        getPageComments(url_head + nextpage,url_head,node,page_num,_count)
     else:
         return
         
