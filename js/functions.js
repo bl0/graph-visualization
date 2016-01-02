@@ -52,7 +52,8 @@ function node_init()
 {
   node.style("fill", "#0000ff")
     .style("r", 5)
-    .style("stroke-width", 1.5);
+    .style("stroke-width", 1.5)
+    .style("stroke", null);
 }
 
 // 将边的style初始化
@@ -66,6 +67,7 @@ function link_init()
 // 将点和边的style初始化
 function init()
 {
+  selectedNode = null;
   link_init();
   node_init();
 }
@@ -352,7 +354,8 @@ function betweenness_centrality_display()
   }
   //介数中心度可视化
   node.style("fill", function(d, i){
-      var r = (1000*BC[i])*(1000*BC[i]);
+      // var r = (1000*BC[i])*(1000*BC[i]);
+      var r = 5000 * (BC[i] - 0.01);
       var g = 0;
       var b = 255 - r;
       return d3.rgb(r, g, b);
@@ -401,7 +404,8 @@ function closeness_centrality_display()
   node.style("fill", function(d, i){
       if(CC[i] > 1000*n*0.9)
         return "black";
-      var r = 255 - Math.sqrt((CC[i] - 9000))*6;
+      // var r = 255 - Math.sqrt((CC[i] - 9000))*6;
+      var r = 255 - (CC[i]-2000)/12;
       var g = 0;
       var b = 255 - r;
       return d3.rgb(r, g, b);
@@ -490,3 +494,18 @@ function Threshold_input_changed()
   Threshold_output.value = Threshold; 
   connected_component_display();
 } 
+function outputInfo(d)
+{
+  var title = document.getElementById("title");
+  var star = document.getElementById("star");
+  var description = document.getElementById("description");
+  var detail = document.getElementById("detail");
+  var title_string = "电影名：" + "<a href=\"" + d.href + "\" target=\"_blank\">"  + d.name + "</a>";
+  var star_string = "豆瓣评分：" + d.star;
+  var description_string = "一句话描述：" + d.description;
+  var detail_string = d.detail;
+  title.innerHTML = title_string;
+  star.innerHTML = star_string;
+  description.innerHTML = description_string;
+  detail.innerHTML = detail_string;
+}

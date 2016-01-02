@@ -24,13 +24,23 @@ body {
 }
 
 a {
-	color: #2fa0ec;
 	text-decoration: none;
 	outline: none;
 }
 
-a:hover, a:focus {
-	color: #404d5b;
+a:link { 
+color:#1A00FF; 
+text-decoration:underline; 
+}
+
+a:visited { 
+color:#FF0000; 
+text-decoration:none; 
+}
+
+a:hover { 
+color:#000000; 
+text-decoration:none; 
 }
 
 .container {
@@ -231,20 +241,6 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-
-a {
-	outline: none;
-	color: #dd3e62;
-	text-decoration: none;
-}
-
-a:hover {
-	color: #1e1a1b;
-}
-
- a:focus {
- 	outline: none;
- }
 
 .hidden {
 	height: 0;

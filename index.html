@@ -15,7 +15,14 @@
 <script src="d3/d3.v3.min.js"></script>
 </head>
 
-<body bgcolor="#94F249">
+<body bgcolor="#94F249" style="width:290px;">
+ <!-- 显示信息 -->
+ <div class="movieInfo">
+    <div id="title"></div>
+    <div id="star"></div>
+    <div id="description"></div>
+    <div id="detail"></div>
+  </div>
   <!-- 功能选择菜单 -->
   <form>
       &nbsp;&nbsp;&nbsp;&nbsp;
@@ -30,7 +37,7 @@
   <!-- 功能菜单 -->
   <div class="form">
     <!-- 最短路径 -->
-    <div id="path" style="style:block">     
+    <div id="path" style="style:block;z-index:-3;">     
       <span class="input input--juro">
           <input class="input__field input__field--juro" type="number" id="source" min="0" max="199" />
           <label class="input__label input__label--juro" for="source">
@@ -94,7 +101,7 @@ var width = 1300,
     height = 600;
 var color = d3.scale.category20();
 var force = d3.layout.force()
-    .charge(-100)
+    .charge(-240)
     .linkDistance(100)
     .gravity(0.1)
     .linkStrength(1)
@@ -182,6 +189,8 @@ d3.json("data/graph.json", function(error, graph) {
       }
     }
   }
+  var selectedNode = null;
+  var previews_color = null;
   //其次加入“点”
   node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -189,6 +198,23 @@ d3.json("data/graph.json", function(error, graph) {
       .attr("class", "node")
       //将点的id设置为点的index。
       .attr("id", function(d){return d.index.toString()+"_node";})
+      .on("click", function(d)
+      {
+        if(selectedNode != null)
+        {
+          d3.select(selectedNode)
+            .style("fill", previews_color)
+            .style("r", 5)
+            .style("stroke", null);
+        }
+        selectedNode = this;
+        previews_color = d3.select(this).style("fill");
+        d3.select(this)
+          .style("fill","red")
+          .style("r", 8)
+          .style("stroke", "yellow");
+        outputInfo(d);
+      })
       .call(force.drag);
   
   

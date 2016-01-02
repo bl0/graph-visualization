@@ -17,9 +17,9 @@
 #include <string>
 #include <cstring>
 using namespace std;
-int maxn = 250;
+int maxn = 100;
 int edge_sample_dist = 5;
-int minWeight = 20;
+int minWeight = 0;
 std::vector<int> source;
 std::vector<int> target;
 std::vector<double> weight;
@@ -86,11 +86,11 @@ int main()
 	fout_graph << "{" << endl;
 	fout_graph << "	\"nodes\":" << endl;
 	fout_graph << "	[" << endl;
-	for(int i = 0; i < nodes.size()-1; i ++)
+	for(int i = 0; i < nodes.size()-1 && i < maxn-1; i ++)
 	{
 		fout_graph << nodes[i] << "," << endl;
 	}
-	fout_graph << nodes.back();
+	fout_graph << nodes[maxn];
 	fout_graph << "	 ]," << endl;
 	fout_graph << "	\"links\":" << endl;
 	fout_graph << "	[" << endl;

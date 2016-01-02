@@ -10,18 +10,28 @@
   z-index: -2;
 }
 
+.movieInfo{
+  position: absolute;
+  top :0;
+  right: 0;
+  width: 300px;
+}
+
 .form{
   width: 290px;
   height: 60px ;
   border:10px;
+  z-index:-3px;
 }
 
 .source, .target, .weight, .Threshold_input, .view_weight{
   width:58px;
+  z-index:-3px;
 }
 
 .button{
   text-align: right;
+  z-index:-3px;
 }
 
 .svg{
@@ -33,6 +43,7 @@
 
 .Threshold{
   width: 150px;
+  z-index:-3px;
 }
 
 /* buttons */
@@ -65,12 +76,13 @@ ul.demo-btns > li {
   background-image:none;
   border:1px solid transparent;
   border-radius:0;
+  z-index:-3px;
 }
 
 .btn.active.focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn:active:focus,.btn:focus{
   outline:thin dotted;
   outline:5px auto -webkit-focus-ring-color;
-  outline-offset:-2px
+  outline-offset:-2px;
 }
 
 .btn.focus,.btn:focus,.btn:hover{
