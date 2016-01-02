@@ -18,7 +18,8 @@
 #include <cstring>
 using namespace std;
 int maxn = 250;
-int edge_sample_dist = 10;
+int edge_sample_dist = 5;
+int minWeight = 20;
 std::vector<int> source;
 std::vector<int> target;
 std::vector<double> weight;
@@ -47,6 +48,7 @@ ostream& operator << (ostream& out, Node& node)
 	out << "			\"description\": \"" << node.description << "\"," << endl;
 	out << "			\"detail\": \"" << node.detail << "\"" << endl;
 	out << "		}";
+	return out;
 }
 
 istream& operator >> (istream& in, Node& node)
@@ -55,6 +57,7 @@ istream& operator >> (istream& in, Node& node)
 	in >> index >> node.ID >> node.name 
 	   >> node.href >> node.star >> node.description;
 	getline(in, node.detail);
+	return in;
 }
 
 std::vector<Node> nodes;
@@ -92,7 +95,7 @@ int main()
 	fout_graph << "	\"links\":" << endl;
 	fout_graph << "	[" << endl;
 	for(int i = 0; i < source.size()-1; i ++)
-	if(i % edge_sample_dist == 0 && weight[i] > 0)
+	if(i % edge_sample_dist == 0 && weight[i] > minWeight)
 	{
 		fout_graph << "		{" << endl;
 		fout_graph << "			\"source\": " << source[i] << "," << endl;
