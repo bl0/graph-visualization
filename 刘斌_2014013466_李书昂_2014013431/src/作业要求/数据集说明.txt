@@ -1,0 +1,9 @@
+1）[豆瓣] 971个节点，259179条边，权值表示节点用户共同看过的电影数目以及评分的相似度。 
+
+2）[DL] Online Social Network 1899 nodes - Opsahl, T., Panzarasa, P., 2009. Clustering in weighted networks. Social Networks 31 (2), 155-163 
+
+3）[GML] Coauthorships in network science: coauthorship network of scientists working on network theory and experiment, as compiled by M. Newman in May 2006. A figure depicting the largest component of this network can be found here. M. E. J. Newman, Phys. Rev. E 74, 036104 (2006) 
+
+注:
+现有数据是有权无向图。网络构建里面，“起点”和“终点”只是一种表示方法，用来方便对图的可视化，可以理解为“起点”和“终点”之间有一条边。
+数据2和数据3中节点Vertices的四个属性分别是 “节点的编号/名称” X坐标 Y坐标 Z坐标 （坐标信息为辅助信息，图分析的时候可以不使用）
